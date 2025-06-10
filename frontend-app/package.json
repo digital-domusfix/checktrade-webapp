@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "lint": "eslint --ext ts,tsx src",
     "format": "prettier --write .",
-    "stylelint": "stylelint \"src/**/*.{css,tsx}\""
+    "stylelint": "stylelint \"src/**/*.css\""
   },
   "dependencies": {
     "react": "^18.2.0",
