@@ -8,7 +8,7 @@ is built with React and Vite and lives under the [`frontend-app/`](frontend-app/
 - **Node.js** >= 18 (see `.nvmrc`)
 - **npm** (comes with Node.js)
 
-## Getting started
+## Setup
 
 Ensure you are using Node.js 18. If you have `nvm` installed you can simply
 run `nvm use` in the project root to activate the version specified in
