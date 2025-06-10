@@ -21,6 +21,7 @@ Other useful commands:
 
 ```bash
 npm run lint    # run ESLint
+npm run stylelint # lint styles
 npm run test    # run unit tests (if defined)
 npm run build   # compile for production
 ```
