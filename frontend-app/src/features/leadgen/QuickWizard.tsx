@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { LeadGenService } from '../../services/leadGenService';
 import { logEvent } from '../../utils/analytics';
@@ -50,9 +51,9 @@ export const QuickWizard = ({ onStart, onComplete }: Props) => {
   };
 
   return (
-    <div className="bg-white p-4 rounded shadow-md text-left">
+    <div className="bg-white p-4 sm:p-6 rounded shadow-md text-left">
       {step === 0 && (
-        <div>
+        <motion.section layout>
           <h3 className="font-semibold mb-4">What do you need help with?</h3>
           <div className="grid grid-cols-2 gap-2">
             {categories.map((c) => (
@@ -68,11 +69,11 @@ export const QuickWizard = ({ onStart, onComplete }: Props) => {
               </button>
             ))}
           </div>
-        </div>
+        </motion.section>
       )}
 
       {step === 1 && (
-        <div className="space-y-4">
+        <motion.section layout className="space-y-4">
           <label className="block text-sm font-medium">Postcode</label>
           <input
             type="text"
@@ -85,11 +86,11 @@ export const QuickWizard = ({ onStart, onComplete }: Props) => {
           <Button onClick={next} disabled={!postcode.match(/^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/)}>
             Next
           </Button>
-        </div>
+        </motion.section>
       )}
 
       {step === 2 && (
-        <div className="space-y-4">
+        <motion.section layout className="space-y-4">
           <label className="block text-sm font-medium">When do you need it?</label>
           <input
             type="date"
@@ -109,11 +110,11 @@ export const QuickWizard = ({ onStart, onComplete }: Props) => {
             </button>
           </div>
           {date && <Button onClick={next}>Next</Button>}
-        </div>
+        </motion.section>
       )}
 
       {step === 3 && (
-        <div className="space-y-4">
+        <motion.section layout className="space-y-4">
           <label className="block text-sm font-medium">Email</label>
           <input
             type="email"
@@ -131,11 +132,11 @@ export const QuickWizard = ({ onStart, onComplete }: Props) => {
           <Button onClick={handleSubmit} disabled={!email && !phone}>
             Get My Quotes
           </Button>
-        </div>
+        </motion.section>
       )}
 
       {step === 4 && (
-        <div className="flex items-center gap-2">
+        <motion.section layout className="flex items-center gap-2">
           <svg className="animate-spin h-5 w-5 text-primary" viewBox="0 0 24 24">
             <circle
               className="opacity-25"
@@ -153,7 +154,7 @@ export const QuickWizard = ({ onStart, onComplete }: Props) => {
             />
           </svg>
           <span>Finding local matches…</span>
-        </div>
+        </motion.section>
       )}
     </div>
   );
