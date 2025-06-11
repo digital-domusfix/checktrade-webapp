@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { Button } from '../../../components/Button';
 import { useAuthStore } from '../../../store/useAuthStore';
 
@@ -7,16 +8,24 @@ interface Props {
 }
 
 const LoginForm = ({ onLoggedIn }: Props) => {
-  const [login, setLogin] = useState('');
-  const [password, setPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const loginFn = useAuthStore((s) => s.login);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  type FormData = {
+    email: string;
+    password: string;
+  };
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>();
+
+  const onSubmit = async (data: FormData) => {
     setSubmitting(true);
     try {
-      await loginFn({ login, password });
+      await loginFn({ login: data.email, password: data.password });
       onLoggedIn();
     } finally {
       setSubmitting(false);
@@ -24,21 +33,45 @@ const LoginForm = ({ onLoggedIn }: Props) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <input
-        type="text"
-        value={login}
-        onChange={(e) => setLogin(e.target.value)}
-        placeholder="Email or phone"
-        className="w-full p-3 border rounded-lg"
-      />
-      <input
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="Password"
-        className="w-full p-3 border rounded-lg"
-      />
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <div>
+        <input
+          type="email"
+          placeholder="Email"
+          {...register('email', {
+            required: 'Email is required',
+            pattern: {
+              value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+              message: 'Enter a valid email',
+            },
+          })}
+          className={`w-full p-3 border rounded-lg ${errors.email ? 'border-red-500' : ''}`}
+        />
+        {errors.email && (
+          <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+        )}
+      </div>
+      <div>
+        <input
+          type="password"
+          placeholder="Password"
+          {...register('password', {
+            required: 'Password is required',
+            minLength: {
+              value: 6,
+              message: 'Password must be at least 6 characters',
+            },
+            pattern: {
+              value: /\d/,
+              message: 'Password must contain at least one number',
+            },
+          })}
+          className={`w-full p-3 border rounded-lg ${errors.password ? 'border-red-500' : ''}`}
+        />
+        {errors.password && (
+          <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
+        )}
+      </div>
       <Button type="submit" className="w-full" disabled={submitting}>
         Login
       </Button>
