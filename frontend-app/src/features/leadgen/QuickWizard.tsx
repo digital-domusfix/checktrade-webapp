@@ -2,18 +2,9 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { LeadGenService } from '../../services/leadGenService';
+import jobService, { JobCategory, JobSubcategory } from '../../services/jobService';
 import { logEvent } from '../../utils/analytics';
 import { Button } from '../../components/Button';
-
-const categories = ['Plumbing', 'Electrical', 'HVAC', 'Renovation', 'Solar'];
-
-const subcategories: Record<string, string[]> = {
-  Plumbing: ['Leaky faucet', 'Toilet issue', 'Install water heater'],
-  Electrical: ['Switches', 'Lighting', 'New wiring'],
-  HVAC: ['AC not working', 'Install heat pump', 'Duct issue'],
-  Renovation: ['Kitchen remodel', 'Bathroom update', 'Basement finishing'],
-  Solar: ['Panel install', 'Repair', 'Battery storage'],
-};
 
 const questions: Record<string, string[]> = {
   'Leaky faucet': ['Is the faucet dripping or spraying?', 'Single handle or two knobs?'],
@@ -30,8 +21,10 @@ interface Props {
 
 export const QuickWizard = ({ onStart, onComplete }: Props) => {
   const [step, setStep] = useState(0);
-  const [category, setCategory] = useState('');
-  const [subcategory, setSubcategory] = useState('');
+  const [categories, setCategories] = useState<JobCategory[]>([]);
+  const [subcategories, setSubcategories] = useState<JobSubcategory[]>([]);
+  const [category, setCategory] = useState<JobCategory | null>(null);
+  const [subcategory, setSubcategory] = useState<JobSubcategory | null>(null);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [notes, setNotes] = useState('');
   const [postcode, setPostcode] = useState('');
@@ -41,8 +34,23 @@ export const QuickWizard = ({ onStart, onComplete }: Props) => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    jobService
+      .getJobCategories()
+      .then((res) => setCategories(res.data))
+      .catch((err) => console.error('Failed to load categories', err));
+  }, []);
+
+  useEffect(() => {
     if (step === 0) onStart?.();
-  }, [step]);
+  }, [step, onStart]);
+
+  useEffect(() => {
+    if (!category) return;
+    jobService
+      .getJobSubcategories(category.id)
+      .then((res) => setSubcategories(res.data))
+      .catch((err) => console.error('Failed to load subcategories', err));
+  }, [category]);
 
   const next = () => {
     const nextStep = step + 1;
@@ -54,8 +62,8 @@ export const QuickWizard = ({ onStart, onComplete }: Props) => {
     logEvent('wizard_complete');
     try {
       const { data } = await LeadGenService.createJobDraft({
-        category,
-        subcategory,
+        category: category?.id ?? '',
+        subcategory: subcategory?.id,
         answers,
         notes,
         postcode,
@@ -79,14 +87,14 @@ export const QuickWizard = ({ onStart, onComplete }: Props) => {
           <div className="grid grid-cols-2 gap-2">
             {categories.map((c) => (
               <button
-                key={c}
+                key={c.id}
                 onClick={() => {
                   setCategory(c);
                   next();
                 }}
                 className="border border-primary rounded p-2 text-sm hover:bg-primary hover:text-white"
               >
-                {c}
+                {c.name}
               </button>
             ))}
           </div>
@@ -97,16 +105,16 @@ export const QuickWizard = ({ onStart, onComplete }: Props) => {
         <motion.section layout>
           <h3 className="font-semibold mb-3">What best describes your job?</h3>
           <div className="grid grid-cols-2 gap-2">
-            {subcategories[category].map((sub) => (
+            {subcategories.map((sub) => (
               <button
-                key={sub}
+                key={sub.id}
                 onClick={() => {
                   setSubcategory(sub);
                   next();
                 }}
                 className="border border-primary rounded p-2 text-sm hover:bg-primary hover:text-white"
               >
-                {sub}
+                {sub.name}
               </button>
             ))}
           </div>
@@ -116,7 +124,7 @@ export const QuickWizard = ({ onStart, onComplete }: Props) => {
       {step === 2 && subcategory && (
         <motion.section layout className="space-y-4">
           <h3 className="font-semibold mb-3">Just a few details</h3>
-          {questions[subcategory]?.map((q, i) => (
+          {questions[subcategory.name]?.map((q, i) => (
             <div key={i}>
               <label className="text-sm font-medium">{q}</label>
               <input
