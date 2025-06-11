@@ -5,4 +5,5 @@ export const AuthService = {
   verifyOtp: identityApi.verifyOtp,
   resendOtp: identityApi.resendOtp,
   getProfile: identityApi.getMyProfile,
+  login: identityApi.login,
 };

@@ -20,6 +20,11 @@ export interface ResendOtpRequest {
   userId: string;
 }
 
+export interface LoginRequest {
+  login: string;
+  password: string;
+}
+
 export const registerUser = (data: RegisterRequest) =>
   http.post<{ userId: string }>('/api/identity/register', data);
 
@@ -30,3 +35,6 @@ export const resendOtp = (data: ResendOtpRequest) =>
   http.post('/api/identity/resend-otp', data);
 
 export const getMyProfile = () => http.get('/api/identity/me');
+
+export const login = (data: LoginRequest) =>
+  http.post('/api/identity/login', data);
