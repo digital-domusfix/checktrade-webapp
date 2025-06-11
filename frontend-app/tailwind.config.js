@@ -5,19 +5,20 @@ export default {
   theme: {
     extend: {
       colors: {
-        base: '#FFFFFF', // dominant background
-        cream: '#FFFEF6',             // ultra-light cream
-        'cream-muted': '#FFFBEA',     // soft section bg
-        'green-main': '#99EE99',      // primary CTA
-        'green-hover': '#C7F6B6',     // hover states
-        'green-accent': '#5DC972',    // icons, trust marks
-        'green-muted': '#E2FAB5', 
+        base: '#FCF8F0',
+        primary: '#166A34',
+        'primary-hover': '#166A34',
+        'primary-accent': '#166A34',
+        'primary-muted': '#166A34',
         green: {
-          DEFAULT: '#99EE99', // main green
-          light: '#C7F6B6',   // hover state, icons
-          muted: '#E2FAB5',   // soft tags, info pills
-          dark: '#6BCB77',    // active buttons, highlights
+          DEFAULT: '#166A34',
+          light: '#166A34',
+          muted: '#166A34',
+          dark: '#166A34',
         },
+      },
+      fontFamily: {
+        sans: ['Nunito', 'sans-serif'],
       },
       scrollBehavior: ['responsive'],
     },
