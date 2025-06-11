@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Spinner } from '../../../components/Spinner';
 import { v4 as uuidv4 } from 'uuid'; // If you want to simulate a tenantId
 import { Button } from '../../../components/Button';
 import { useAuthStore } from '../../../store/useAuthStore';
@@ -18,6 +19,8 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onRegistered }) => {
     password: false,
   });
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
   const register = useAuthStore((s) => s.register);
 
   const isEmailValid = (val: string) =>
@@ -30,17 +33,25 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onRegistered }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
+    setSubmitting(true);
+    try {
+      const userId = await register({
+        login: email,
+        userType: 'Customer',
+        tenantId: uuidv4(), // Replace with real tenant ID
+        preferredLanguage: 'en',
+        referralSource: 'Website',
+      });
 
-    const userId = await register({
-      login: email,
-      userType: 'Customer',
-      tenantId: uuidv4(), // Replace with real tenant ID
-      preferredLanguage: 'en',
-      referralSource: 'Website',
-    });
-
-    onRegistered(userId);
-    setSubmitted(true);
+      onRegistered(userId);
+      setSubmitted(true);
+    } catch (err: any) {
+      const message = err?.response?.data?.message || err.message || 'Registration failed';
+      setError(message);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleBlur = (field: keyof typeof touched) =>
@@ -50,6 +61,11 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onRegistered }) => {
     <div className="text-center text-primary">OTP sent! Please verify.</div>
   ) : (
     <form onSubmit={handleSubmit} className="space-y-4">
+      {error && (
+        <div className="bg-red-100 text-red-700 p-2 rounded text-sm" role="alert">
+          {error}
+        </div>
+      )}
       <div>
         <input
           type="text"
@@ -96,7 +112,8 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onRegistered }) => {
           <p className="text-red-500 text-sm mt-1">Password must be at least 6 characters</p>
         )}
       </div>
-      <Button type="submit" className="w-full" disabled={!isFormValid}>
+      <Button type="submit" className="w-full flex items-center justify-center" disabled={submitting || !isFormValid}>
+        {submitting && <Spinner className="text-white mr-2" />}
         Sign Up
       </Button>
     </form>
