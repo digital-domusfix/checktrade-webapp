@@ -16,10 +16,14 @@ export const RegisterScreen = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto p-6">
-      <h1 className="text-2xl font-bold text-center mb-6">Join CheckTrade</h1>
-      {step === 'register' && <RegisterForm onRegistered={handleRegisterSuccess} />}
-      {step === 'verify' && userId && <OtpForm userId={userId} onVerified={handleVerifySuccess} />}
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        <h1 className="text-2xl font-bold text-center mb-6">Join CheckTrade</h1>
+        {step === 'register' && <RegisterForm onRegistered={handleRegisterSuccess} />}
+        {step === 'verify' && userId && (
+          <OtpForm userId={userId} onVerified={handleVerifySuccess} />
+        )}
+      </div>
     </div>
   );
 };

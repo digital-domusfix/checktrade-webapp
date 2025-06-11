@@ -33,9 +33,13 @@ const LoginForm = ({ onLoggedIn }: Props) => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <div>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 max-w-md mx-auto">
+      <div className="space-y-1">
+        <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+          Email
+        </label>
         <input
+          id="email"
           type="email"
           placeholder="Email"
           {...register('email', {
@@ -51,8 +55,12 @@ const LoginForm = ({ onLoggedIn }: Props) => {
           <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
         )}
       </div>
-      <div>
+      <div className="space-y-1">
+        <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+          Password
+        </label>
         <input
+          id="password"
           type="password"
           placeholder="Password"
           {...register('password', {

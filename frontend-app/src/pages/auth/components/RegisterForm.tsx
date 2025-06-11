@@ -63,14 +63,18 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onRegistered }) => {
   return submitted ? (
     <div className="text-center text-primary">OTP sent! Please verify.</div>
   ) : (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-4 max-w-md mx-auto">
       {error && (
         <div className="bg-red-100 text-red-700 p-2 rounded text-sm" role="alert">
           {error}
         </div>
       )}
-      <div>
+      <div className="space-y-1">
+        <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">
+          Full name
+        </label>
         <input
+          id="fullName"
           type="text"
           placeholder="Full name"
           value={fullName}
@@ -84,8 +88,12 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onRegistered }) => {
           <p className="text-red-500 text-sm mt-1">Full name is required</p>
         )}
       </div>
-      <div>
+      <div className="space-y-1">
+        <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+          Email address
+        </label>
         <input
+          id="email"
           type="email"
           placeholder="Email address"
           value={email}
@@ -99,8 +107,12 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onRegistered }) => {
           <p className="text-red-500 text-sm mt-1">Enter a valid email</p>
         )}
       </div>
-      <div className="relative">
+      <div className="relative space-y-1">
+        <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+          Password
+        </label>
         <input
+          id="password"
           type={showPassword ? 'text' : 'password'}
           placeholder="Password"
           value={password}

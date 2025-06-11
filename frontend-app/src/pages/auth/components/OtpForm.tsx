@@ -21,16 +21,22 @@ export const OtpForm = ({ userId, onVerified }: Props) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <input
-        type="text"
-        inputMode="numeric"
-        maxLength={6}
-        value={otp}
-        onChange={(e) => setOtp(e.target.value)}
-        className="w-full p-3 rounded-lg border text-center tracking-widest text-xl"
-        placeholder="Enter 6-digit code"
-      />
+    <form onSubmit={handleSubmit} className="space-y-4 max-w-sm mx-auto">
+      <div className="space-y-1">
+        <label htmlFor="otp" className="block text-sm font-medium text-gray-700">
+          Verification code
+        </label>
+        <input
+          id="otp"
+          type="text"
+          inputMode="numeric"
+          maxLength={6}
+          value={otp}
+          onChange={(e) => setOtp(e.target.value)}
+          className="w-full p-3 rounded-lg border text-center tracking-widest text-xl"
+          placeholder="Enter 6-digit code"
+        />
+      </div>
       <Button type="submit" className="w-full" disabled={submitting}>
         Verify
       </Button>
