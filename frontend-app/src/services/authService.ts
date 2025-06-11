@@ -1,4 +1,4 @@
-import * as identityApi from '@/api/identityApi';
+import * as identityApi from '../api/identityApi';
 
 export const AuthService = {
   register: identityApi.registerUser,
