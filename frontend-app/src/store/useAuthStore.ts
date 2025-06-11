@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { RegisterRequest, VerifyOtpRequest, ResendOtpRequest, registerUser, verifyOtp, resendOtp, getMyProfile } from '../api/identityApi';
+import { MyProfileDto } from '../types/common';
 
 type AuthState = {
   profile: MyProfileDto | null;
