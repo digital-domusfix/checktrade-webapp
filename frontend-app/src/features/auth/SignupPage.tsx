@@ -1,7 +1,7 @@
-import React from 'react';
+import { RegisterScreen } from '../../screens/RegisterScreen';
 
 function SignupPage() {
-  return <div className="p-4">Signup Page</div>;
+  return <RegisterScreen />;
 }
 
 export default SignupPage;

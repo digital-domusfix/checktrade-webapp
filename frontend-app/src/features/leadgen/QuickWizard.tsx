@@ -63,6 +63,7 @@ export const QuickWizard = ({ onStart, onComplete }: Props) => {
         email,
         phone,
       });
+      localStorage.setItem('draftToken', data.token);
       onComplete?.(data.token);
       navigate('/job/new');
     } catch (error) {
