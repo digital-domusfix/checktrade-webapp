@@ -8,12 +8,15 @@ const users = [];
 const jobs = [];
 
 app.post('/api/identity/register', (req, res) => {
-  const { login } = req.body;
-  if (!login) {
-    return res.status(400).json({ error: 'login required' });
+  const { fullName, email, password } = req.body;
+
+  if (!fullName || !email || !password) {
+    return res.status(400).json({ error: 'fullName, email, and password required' });
   }
-  const user = { id: uuidv4(), login };
+
+  const user = { id: uuidv4(), fullName, email, password };
   users.push(user);
+
   res.status(201).json({ userId: user.id });
 });
 

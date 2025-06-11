@@ -8,18 +8,30 @@ describe('API', () => {
   });
 
   test('register user', async () => {
+    const payload = {
+      fullName: 'Test User',
+      email: 'test@example.com',
+      password: 'secret123',
+    };
+
     const res = await request(app)
       .post('/api/identity/register')
-      .send({ login: 'test@example.com' });
+      .send(payload);
+
     expect(res.status).toBe(201);
     expect(res.body.userId).toBeDefined();
     expect(users.length).toBe(1);
+    expect(users[0]).toMatchObject(payload);
   });
 
   test('create job for user', async () => {
     const userRes = await request(app)
       .post('/api/identity/register')
-      .send({ login: 'job@example.com' });
+      .send({
+        fullName: 'Job User',
+        email: 'job@example.com',
+        password: 'secret123',
+      });
     const userId = userRes.body.userId;
     const jobRes = await request(app)
       .post(`/api/users/${userId}/jobs`)
