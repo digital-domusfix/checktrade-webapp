@@ -7,27 +7,24 @@ import ContractorHighlights from './ContractorHighlights';
 import WhyCheckTradeSection from './WhyCheckTradeSection';
 import LocationsGrid from './LocationsGrid';
 import NewsletterSection from './NewsletterSection';
-import { RegisterModal } from '../../components/auth/RegisterModal';
 import StickyFooterCTA from './StickyFooterCTA';
 
 const HomePage: React.FC = () => {
-  const [showRegister, setShowRegister] = useState(false);
+  const [showWizard, setShowWizard] = useState(false);
 
-  const handleOpenRegister = () => setShowRegister(true);
-  const handleCloseRegister = () => setShowRegister(false);
+  const toggleWizard = () => setShowWizard((s) => !s);
 
   return (
     <main>
-      <HeroSection  />
-      <HowItWorksSection onGetStartedClick={handleOpenRegister} />
+      <HeroSection showWizard={showWizard} onToggleWizard={toggleWizard} />
+      <HowItWorksSection onGetStartedClick={toggleWizard} />
       <CategoriesSection />
       <LocationsGrid />
       <TestimonialsSection />
       <ContractorHighlights />
       <WhyCheckTradeSection />
-      <NewsletterSection onGetStartedClick={handleOpenRegister} />
-      <RegisterModal open={showRegister} onClose={handleCloseRegister} />
-      <StickyFooterCTA onClick={handleOpenRegister} />
+      <NewsletterSection onGetStartedClick={toggleWizard} />
+      <StickyFooterCTA onClick={toggleWizard} />
     </main>
   );
 };

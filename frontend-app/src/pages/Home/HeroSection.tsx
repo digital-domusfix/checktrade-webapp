@@ -1,15 +1,17 @@
-import { useState } from 'react';
 import { Button } from '../../components/Button';
 import QuickWizard from '../../features/leadgen/QuickWizard';
 import { logEvent } from '../../utils/analytics';
 
+interface Props {
+  showWizard: boolean;
+  onToggleWizard: () => void;
+}
 
-const HeroSection = () => {
-  const [showWizard, setShowWizard] = useState(false);
 
+const HeroSection = ({ showWizard, onToggleWizard }: Props) => {
   const handleClick = () => {
     logEvent('cta_click', { source: 'hero' });
-    setShowWizard((s) => !s);
+    onToggleWizard();
   };
 
   return (
