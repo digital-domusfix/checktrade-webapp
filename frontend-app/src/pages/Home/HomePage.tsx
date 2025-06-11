@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import HeroSection from './HeroSection';
 import HowItWorksSection from './HowItWorksSection';
 import CategoriesSection from './CategoriesSection';
@@ -8,23 +8,22 @@ import WhyCheckTradeSection from './WhyCheckTradeSection';
 import LocationsGrid from './LocationsGrid';
 import NewsletterSection from './NewsletterSection';
 import StickyFooterCTA from './StickyFooterCTA';
+import { useModal } from '../../components/ModalManager';
 
 const HomePage: React.FC = () => {
-  const [showWizard, setShowWizard] = useState(false);
-
-  const toggleWizard = () => setShowWizard((s) => !s);
+  const { openWizard } = useModal();
 
   return (
     <main>
-      <HeroSection showWizard={showWizard} onToggleWizard={toggleWizard} />
-      <HowItWorksSection onGetStartedClick={toggleWizard} />
+      <HeroSection /> 
+      <HowItWorksSection onGetStartedClick={() => openWizard('howItWorks')} />
       <CategoriesSection />
       <LocationsGrid />
       <TestimonialsSection />
       <ContractorHighlights />
       <WhyCheckTradeSection />
-      <NewsletterSection onGetStartedClick={toggleWizard} />
-      <StickyFooterCTA onClick={toggleWizard} />
+      <NewsletterSection onGetStartedClick={() => openWizard('footer')} />
+      <StickyFooterCTA onClick={() => openWizard('footer')} />
     </main>
   );
 };

@@ -1,41 +1,70 @@
-import { CheckCircleIcon } from 'lucide-react';
 import { SectionWrapper } from '../../components/SectionWrapper';
+import { motion } from 'framer-motion';
+import { ClipboardCheck, Users, MessageSquareHeart } from 'lucide-react';
 
 interface Props {
   onGetStartedClick?: () => void;
 }
 
 const steps = [
-  { title: 'Tell us what you need', description: 'Quick form — no account required.' },
-  { title: 'Get local quotes', description: 'From trusted, verified contractors.' },
-  { title: 'Hire with confidence', description: 'Chat, compare, and confirm easily.' },
+  {
+    title: '1. Tell us what you need',
+    description: 'Post a quick job — no sign-up required.',
+    icon: ClipboardCheck,
+  },
+  {
+    title: '2. See local pros respond',
+    description: 'Verified contractors reach out with quotes.',
+    icon: Users,
+  },
+  {
+    title: '3. Chat & hire when ready',
+    description: 'Compare, message, and book confidently.',
+    icon: MessageSquareHeart,
+  },
 ];
 
 const HowItWorksSection: React.FC<Props> = ({ onGetStartedClick }) => (
   <SectionWrapper id="how-it-works" title="How It Works" className="bg-base">
-    <div className="grid gap-8 sm:grid-cols-3 pt-4">
-      {steps.map((step, i) => (
-        <div
+    <motion.div
+      className="grid gap-6 sm:grid-cols-3 pt-6"
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      variants={{
+        hidden: {},
+        visible: {
+          transition: { staggerChildren: 0.2 },
+        },
+      }}
+    >
+      {steps.map(({ icon: Icon, title, description }, i) => (
+        <motion.div
           key={i}
-          className="text-center bg-white rounded-xl p-6 shadow-md transition hover:shadow-lg"
+          className="bg-white text-center p-6 rounded-xl shadow-md hover:shadow-xl transition"
+          variants={{
+            hidden: { opacity: 0, y: 30 },
+            visible: { opacity: 1, y: 0 },
+          }}
         >
           <div className="flex justify-center mb-4">
-            <CheckCircleIcon className="w-10 h-10 text-primary" />
+            <Icon className="h-10 w-10 text-primary" />
           </div>
-          <h4 className="font-semibold text-xl text-gray-800 mb-1">{step.title}</h4>
-          <p className="text-gray-600 text-sm">{step.description}</p>
-        </div>
+          <h4 className="font-semibold text-xl text-gray-900 mb-1">{title}</h4>
+          <p className="text-gray-600 text-sm">{description}</p>
+        </motion.div>
       ))}
-    </div>
+    </motion.div>
 
     {onGetStartedClick && (
       <div className="text-center mt-10">
         <button
           onClick={onGetStartedClick}
-          className="bg-primary hover:bg-primary-hover text-white px-6 py-3 rounded-full font-semibold text-lg"
+          className="bg-primary hover:bg-primary-hover text-white px-6 py-3 rounded-full font-semibold text-lg shadow-md"
         >
-          Get Started
+          Get Free Quotes
         </button>
+        <p className="text-sm text-gray-500 mt-2">It only takes 30 seconds</p>
       </div>
     )}
   </SectionWrapper>
