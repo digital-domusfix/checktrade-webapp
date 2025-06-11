@@ -26,10 +26,7 @@ export interface CreateJobRequest {
 export const createJob = (data: CreateJobRequest) =>
   http.post('/api/lead-gen/jobs', data);
 
-export const createJobDraft = (
-  data: unknown,
-  token?: string,
-) =>
+export const createJobDraft = (data: unknown, token?: string) =>
   http.post<{ token: string }>('/api/lead-gen/jobs/draft', data, {
     headers: token ? { 'Auto-Save-Token': token } : undefined,
   });
@@ -59,6 +56,9 @@ export const getJobSubcategories = (categoryId: string) =>
 export const getJobSubcategoryForm = (id: string) =>
   http.get(`/api/job-subcategories/${id}/form`);
 
+export const getJobsForProperty = (propertyId: string) =>
+  http.get(`/api/identity/properties/${propertyId}/jobs`);
+
 export default {
   createJob,
   createJobDraft,
@@ -66,4 +66,5 @@ export default {
   getJobCategories,
   getJobSubcategories,
   getJobSubcategoryForm,
+  getJobsForProperty,
 };
