@@ -5,16 +5,35 @@ import { LeadGenService } from '../../services/leadGenService';
 import { logEvent } from '../../utils/analytics';
 import { Button } from '../../components/Button';
 
+const categories = ['Plumbing', 'Electrical', 'HVAC', 'Renovation', 'Solar'];
+
+const subcategories: Record<string, string[]> = {
+  Plumbing: ['Leaky faucet', 'Toilet issue', 'Install water heater'],
+  Electrical: ['Switches', 'Lighting', 'New wiring'],
+  HVAC: ['AC not working', 'Install heat pump', 'Duct issue'],
+  Renovation: ['Kitchen remodel', 'Bathroom update', 'Basement finishing'],
+  Solar: ['Panel install', 'Repair', 'Battery storage'],
+};
+
+const questions: Record<string, string[]> = {
+  'Leaky faucet': ['Is the faucet dripping or spraying?', 'Single handle or two knobs?'],
+  'Toilet issue': ['Does it flush?', 'Is it leaking around the base?'],
+  Lighting: ['What kind of lights?', 'Ceiling or wall-mounted?'],
+  'AC not working': ['Is the fan running?', 'When did the issue start?'],
+  'Kitchen remodel': ['Full remodel or cosmetic?', 'Include plumbing/electrical changes?'],
+};
+
 interface Props {
   onStart?: () => void;
   onComplete?: (token: string) => void;
 }
 
-const categories = ['Plumbing', 'Electrical', 'HVAC', 'Renovation', 'Solar'];
-
 export const QuickWizard = ({ onStart, onComplete }: Props) => {
   const [step, setStep] = useState(0);
   const [category, setCategory] = useState('');
+  const [subcategory, setSubcategory] = useState('');
+  const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [notes, setNotes] = useState('');
   const [postcode, setPostcode] = useState('');
   const [date, setDate] = useState('');
   const [email, setEmail] = useState('');
@@ -23,38 +42,39 @@ export const QuickWizard = ({ onStart, onComplete }: Props) => {
 
   useEffect(() => {
     if (step === 0) onStart?.();
-  }, [step, onStart]);
+  }, [step]);
 
   const next = () => {
-    setStep((s) => {
-      const nextStep = s + 1;
-      logEvent('wizard_step', { step: nextStep });
-      return nextStep;
-    });
+    const nextStep = step + 1;
+    logEvent('wizard_step', { step: nextStep });
+    setStep(nextStep);
   };
 
   const handleSubmit = async () => {
-    setStep(4);
     logEvent('wizard_complete');
     try {
       const { data } = await LeadGenService.createJobDraft({
         category,
+        subcategory,
+        answers,
+        notes,
         postcode,
         date,
         email,
         phone,
       });
       onComplete?.(data.token);
-    } finally {
       navigate('/job/new');
+    } catch (error) {
+      console.error('Submission failed', error);
     }
   };
 
   return (
-    <div className="bg-white p-4 sm:p-6 rounded shadow-md text-left">
+    <div className="bg-white p-5 sm:p-6 rounded shadow-md text-left space-y-6 max-w-xl mx-auto">
       {step === 0 && (
         <motion.section layout>
-          <h3 className="font-semibold mb-4">What do you need help with?</h3>
+          <h3 className="font-semibold mb-3">What kind of help do you need?</h3>
           <div className="grid grid-cols-2 gap-2">
             {categories.map((c) => (
               <button
@@ -72,26 +92,70 @@ export const QuickWizard = ({ onStart, onComplete }: Props) => {
         </motion.section>
       )}
 
-      {step === 1 && (
+      {step === 1 && category && (
+        <motion.section layout>
+          <h3 className="font-semibold mb-3">What best describes your job?</h3>
+          <div className="grid grid-cols-2 gap-2">
+            {subcategories[category].map((sub) => (
+              <button
+                key={sub}
+                onClick={() => {
+                  setSubcategory(sub);
+                  next();
+                }}
+                className="border border-primary rounded p-2 text-sm hover:bg-primary hover:text-white"
+              >
+                {sub}
+              </button>
+            ))}
+          </div>
+        </motion.section>
+      )}
+
+      {step === 2 && subcategory && (
         <motion.section layout className="space-y-4">
-          <label className="block text-sm font-medium">Postcode</label>
+          <h3 className="font-semibold mb-3">Just a few details</h3>
+          {questions[subcategory]?.map((q, i) => (
+            <div key={i}>
+              <label className="text-sm font-medium">{q}</label>
+              <input
+                type="text"
+                value={answers[q] || ''}
+                onChange={(e) => setAnswers({ ...answers, [q]: e.target.value })}
+                className="w-full border p-2 rounded"
+              />
+            </div>
+          ))}
+          <div>
+            <label className="text-sm font-medium">Anything else we should know?</label>
+            <textarea
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              className="w-full border p-2 rounded"
+              placeholder="Optional — describe your situation"
+            />
+          </div>
+          <Button onClick={next}>Continue</Button>
+        </motion.section>
+      )}
+
+      {step === 3 && (
+        <motion.section layout className="space-y-4">
+          <label className="block text-sm font-medium">Your location (Postcode)</label>
           <input
             type="text"
             value={postcode}
             onChange={(e) => setPostcode(e.target.value)}
-            placeholder="B3J 2K9"
-            pattern="[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d"
+            placeholder="e.g. B3J 2K9"
             className="w-full border p-2 rounded"
           />
-          <Button onClick={next} disabled={!postcode.match(/^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/)}>
-            Next
-          </Button>
+          <Button onClick={next} disabled={!postcode}>Continue</Button>
         </motion.section>
       )}
 
-      {step === 2 && (
+      {step === 4 && (
         <motion.section layout className="space-y-4">
-          <label className="block text-sm font-medium">When do you need it?</label>
+          <label className="block text-sm font-medium">When do you need the service?</label>
           <input
             type="date"
             value={date}
@@ -113,47 +177,36 @@ export const QuickWizard = ({ onStart, onComplete }: Props) => {
         </motion.section>
       )}
 
-      {step === 3 && (
+      {step === 5 && (
         <motion.section layout className="space-y-4">
-          <label className="block text-sm font-medium">Email</label>
+          <label className="block text-sm font-medium">Your Email</label>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="w-full border p-2 rounded"
           />
-          <label className="block text-sm font-medium">Phone</label>
+          <label className="block text-sm font-medium">Phone (optional)</label>
           <input
             type="tel"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             className="w-full border p-2 rounded"
           />
-          <Button onClick={handleSubmit} disabled={!email && !phone}>
-            Get My Quotes
-          </Button>
+          <Button onClick={next} disabled={!email}>Next</Button>
         </motion.section>
       )}
 
-      {step === 4 && (
-        <motion.section layout className="flex items-center gap-2">
-          <svg className="animate-spin h-5 w-5 text-primary" viewBox="0 0 24 24">
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-              fill="none"
-            />
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-            />
-          </svg>
-          <span>Finding local matches…</span>
+      {step === 6 && (
+        <motion.section layout className="text-center space-y-4">
+          <h4 className="font-semibold text-lg">One last step!</h4>
+          <p className="text-gray-600 text-sm">
+            We’ve saved your job. Create a free account to message contractors and track your quotes.
+          </p>
+          <Button onClick={handleSubmit}>Register & View Quotes</Button>
+          <p className="text-xs text-gray-400">
+            Already have an account? <a href="/login" className="underline text-primary">Sign in</a>
+          </p>
         </motion.section>
       )}
     </div>
