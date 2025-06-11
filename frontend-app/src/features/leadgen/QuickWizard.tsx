@@ -125,9 +125,12 @@ export const QuickWizard = ({ onStart, onComplete }: Props) => {
         <motion.section layout className="space-y-4">
           <h3 className="font-semibold mb-3">Just a few details</h3>
           {questions[subcategory.name]?.map((q, i) => (
-            <div key={i}>
-              <label className="text-sm font-medium">{q}</label>
+            <div key={i} className="space-y-1">
+              <label htmlFor={`q${i}`} className="text-sm font-medium">
+                {q}
+              </label>
               <input
+                id={`q${i}`}
                 type="text"
                 value={answers[q] || ''}
                 onChange={(e) => setAnswers({ ...answers, [q]: e.target.value })}
@@ -136,8 +139,11 @@ export const QuickWizard = ({ onStart, onComplete }: Props) => {
             </div>
           ))}
           <div>
-            <label className="text-sm font-medium">Anything else we should know?</label>
+            <label htmlFor="notes" className="text-sm font-medium">
+              Anything else we should know?
+            </label>
             <textarea
+              id="notes"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               className="w-full border p-2 rounded"
@@ -150,8 +156,11 @@ export const QuickWizard = ({ onStart, onComplete }: Props) => {
 
       {step === 3 && (
         <motion.section layout className="space-y-4">
-          <label className="block text-sm font-medium">Your location (Postcode)</label>
+          <label htmlFor="postcode" className="block text-sm font-medium">
+            Your location (Postcode)
+          </label>
           <input
+            id="postcode"
             type="text"
             value={postcode}
             onChange={(e) => setPostcode(e.target.value)}
@@ -164,8 +173,11 @@ export const QuickWizard = ({ onStart, onComplete }: Props) => {
 
       {step === 4 && (
         <motion.section layout className="space-y-4">
-          <label className="block text-sm font-medium">When do you need the service?</label>
+          <label htmlFor="needDate" className="block text-sm font-medium">
+            When do you need the service?
+          </label>
           <input
+            id="needDate"
             type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
@@ -188,15 +200,21 @@ export const QuickWizard = ({ onStart, onComplete }: Props) => {
 
       {step === 5 && (
         <motion.section layout className="space-y-4">
-          <label className="block text-sm font-medium">Your Email</label>
+          <label htmlFor="email" className="block text-sm font-medium">
+            Your Email
+          </label>
           <input
+            id="email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="w-full border p-2 rounded"
           />
-          <label className="block text-sm font-medium">Phone (optional)</label>
+          <label htmlFor="phone" className="block text-sm font-medium">
+            Phone (optional)
+          </label>
           <input
+            id="phone"
             type="tel"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}

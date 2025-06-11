@@ -6,9 +6,11 @@ function LoginPage() {
   };
 
   return (
-    <div className="max-w-md mx-auto p-6">
-      <h1 className="text-2xl font-bold text-center mb-6">Login</h1>
-      <LoginForm onLoggedIn={handleLoggedIn} />
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        <h1 className="text-2xl font-bold text-center mb-6">Login</h1>
+        <LoginForm onLoggedIn={handleLoggedIn} />
+      </div>
     </div>
   );
 }
