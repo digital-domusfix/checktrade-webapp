@@ -3,6 +3,7 @@ import { Spinner } from '../../../components/Spinner';
 import { v4 as uuidv4 } from 'uuid'; // If you want to simulate a tenantId
 import { Button } from '../../../components/Button';
 import { useAuthStore } from '../../../store/useAuthStore';
+import { FcGoogle } from 'react-icons/fc';
 
 interface RegisterFormProps {
   onRegistered: (userId: string) => void;
@@ -116,6 +117,14 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onRegistered }) => {
         {submitting && <Spinner className="text-white mr-2" />}
         Sign Up
       </Button>
+      <button
+        type="button"
+        onClick={() => (window.location.href = `${import.meta.env.VITE_API_BASE_URL}/api/identity/oauth/google`)}
+        className="w-full flex items-center justify-center gap-2 py-2 px-4 border border-gray-300 rounded-md hover:bg-gray-100"
+      >
+        <FcGoogle size={20} />
+        <span className="text-sm font-medium text-gray-800">Continue with Google</span>
+      </button>
     </form>
   );
 };
