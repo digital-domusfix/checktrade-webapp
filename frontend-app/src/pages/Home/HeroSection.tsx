@@ -3,7 +3,7 @@ import { Button } from '../../components/Button';
 
 
 const HeroSection = () => (
-  <section className="bg-cream-muted text-center py-16 px-4">
+  <section className="bg-base text-center py-16 px-4">
     <h1 className="text-4xl font-bold text-gray-900 max-w-2xl mx-auto">
       Find Trusted Contractors in Nova Scotia
     </h1>

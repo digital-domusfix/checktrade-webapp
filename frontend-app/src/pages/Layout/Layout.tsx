@@ -9,11 +9,11 @@ const Layout: React.FC = () => {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="bg-cream text-gray-900 min-h-screen flex flex-col">
-    <header className="bg-cream-muted/70 backdrop-blur-sm shadow-sm sticky top-0 z-50 border-b border-cream">
+    <div className="bg-base text-primary min-h-screen flex flex-col">
+    <header className="bg-base/70 backdrop-blur-sm shadow-sm sticky top-0 z-50 border-b border-base">
   <nav className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
     {/* Logo */}
-    <Link to="/" className="text-2xl font-bold text-green-accent tracking-tight">CheckTrade</Link>
+    <Link to="/" className="text-2xl font-bold text-primary tracking-tight">CheckTrade</Link>
 
     {/* Desktop links */}
     <div className="hidden sm:flex gap-6 items-center">
@@ -30,7 +30,7 @@ const Layout: React.FC = () => {
 
     {/* Mobile Toggle */}
     <button className="sm:hidden" onClick={() => setOpen(!open)}>
-      {open ? <X className="w-6 h-6 text-green-accent" /> : <Menu className="w-6 h-6 text-green-accent" />}
+      {open ? <X className="w-6 h-6 text-primary" /> : <Menu className="w-6 h-6 text-primary" />}
     </button>
   </nav>
 

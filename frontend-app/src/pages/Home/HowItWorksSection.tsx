@@ -12,7 +12,7 @@ const steps = [
 ];
 
 const HowItWorksSection: React.FC<Props> = ({ onGetStartedClick }) => (
-  <SectionWrapper id="how-it-works" title="How It Works" className="bg-cream-muted">
+  <SectionWrapper id="how-it-works" title="How It Works" className="bg-base">
     <div className="grid gap-8 sm:grid-cols-3 pt-4">
       {steps.map((step, i) => (
         <div
@@ -20,7 +20,7 @@ const HowItWorksSection: React.FC<Props> = ({ onGetStartedClick }) => (
           className="text-center bg-white rounded-xl p-6 shadow-md transition hover:shadow-lg"
         >
           <div className="flex justify-center mb-4">
-            <CheckCircleIcon className="w-10 h-10 text-green-accent" />
+            <CheckCircleIcon className="w-10 h-10 text-primary" />
           </div>
           <h4 className="font-semibold text-xl text-gray-800 mb-1">{step.title}</h4>
           <p className="text-gray-600 text-sm">{step.description}</p>
@@ -32,7 +32,7 @@ const HowItWorksSection: React.FC<Props> = ({ onGetStartedClick }) => (
       <div className="text-center mt-10">
         <button
           onClick={onGetStartedClick}
-          className="bg-green-accent hover:bg-green-accent-dark text-white px-6 py-3 rounded-full font-semibold text-lg"
+          className="bg-primary hover:bg-primary-hover text-white px-6 py-3 rounded-full font-semibold text-lg"
         >
           Get Started
         </button>

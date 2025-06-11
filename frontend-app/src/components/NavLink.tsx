@@ -9,8 +9,8 @@ export const NavLink = ({ to, children }: { to: string; children: React.ReactNod
       clsx(
         'text-sm font-medium transition-all duration-200',
         isActive
-          ? 'text-green-accent border-b-2 border-green-accent pb-1'
-          : 'text-gray-600 hover:text-green-accent'
+          ? 'text-primary border-b-2 border-primary pb-1'
+          : 'text-gray-600 hover:text-primary'
       )
     }
   >
