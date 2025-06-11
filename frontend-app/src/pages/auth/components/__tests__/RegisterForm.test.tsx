@@ -36,3 +36,52 @@ it('enables submit when form is valid and submits registration', async () => {
 
   await waitFor(() => expect(onRegistered).toHaveBeenCalledWith('user1'));
 });
+
+it('shows validation errors on blur when fields are invalid', async () => {
+  render(<RegisterForm onRegistered={() => {}} />);
+
+  fireEvent.blur(screen.getByLabelText(/full name/i));
+  expect(await screen.findByText(/full name is required/i)).toBeInTheDocument();
+
+  fireEvent.change(screen.getByLabelText(/email address/i), {
+    target: { value: 'invalid' },
+  });
+  fireEvent.blur(screen.getByLabelText(/email address/i));
+  expect(await screen.findByText(/enter a valid email/i)).toBeInTheDocument();
+
+  fireEvent.change(screen.getByLabelText(/password/i), {
+    target: { value: 'short' },
+  });
+  fireEvent.blur(screen.getByLabelText(/password/i));
+  expect(
+    await screen.findByText(/password must be at least 6 characters/i)
+  ).toBeInTheDocument();
+
+  expect(screen.getByRole('button', { name: /sign up/i })).toBeDisabled();
+});
+
+it('disables submit while submitting and triggers success callback', async () => {
+  const onRegistered = vi.fn();
+  const registerPromise = new Promise<string>((res) => setTimeout(() => res('user1'), 10));
+  registerMock.mockReturnValueOnce(registerPromise);
+
+  render(<RegisterForm onRegistered={onRegistered} />);
+
+  fireEvent.change(screen.getByPlaceholderText(/full name/i), {
+    target: { value: 'John Doe' },
+  });
+  fireEvent.change(screen.getByPlaceholderText(/email address/i), {
+    target: { value: 'john@example.com' },
+  });
+  fireEvent.change(screen.getByPlaceholderText(/password/i), {
+    target: { value: 'secret123' },
+  });
+
+  const button = screen.getByRole('button', { name: /sign up/i });
+  fireEvent.submit(button);
+
+  expect(button).toBeDisabled();
+
+  await waitFor(() => expect(onRegistered).toHaveBeenCalledWith('user1'));
+  expect(screen.getByText(/otp sent/i)).toBeInTheDocument();
+});
