@@ -1,44 +1,20 @@
-import { SectionWrapper } from '../../components/SectionWrapper';
-import {
-  WrenchIcon,
-  PlugIcon,
-  FlameIcon,
-  HomeIcon,
-  SunIcon,
-} from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { HomeIcon } from 'lucide-react';
+import { SectionWrapper } from '../../components/SectionWrapper';
 import { useModal } from '../../components/ModalManager';
-
-const categories = [
-  {
-    name: 'Plumbing',
-    icon: WrenchIcon,
-    topTask: 'Fix leaks & install fixtures',
-  },
-  {
-    name: 'Electrical',
-    icon: PlugIcon,
-    topTask: 'Lighting, sockets & safety',
-  },
-  {
-    name: 'HVAC',
-    icon: FlameIcon,
-    topTask: 'Heating, cooling, maintenance',
-  },
-  {
-    name: 'Renovation',
-    icon: HomeIcon,
-    topTask: 'Kitchen, bath & basement renos',
-  },
-  {
-    name: 'Solar',
-    icon: SunIcon,
-    topTask: 'Panels & energy consultation',
-  },
-];
+import jobService, { JobCategory } from '../../services/jobService';
 
 const CategoriesSection = () => {
   const { openWizard } = useModal();
+  const [categories, setCategories] = useState<JobCategory[]>([]);
+
+  useEffect(() => {
+    jobService
+      .getJobCategories()
+      .then((res) => setCategories(res.data))
+      .catch((err) => console.error('Failed to load categories', err));
+  }, []);
 
   return (
     <SectionWrapper id="categories" title="What do you need done today?" className="bg-white">
@@ -46,16 +22,15 @@ const CategoriesSection = () => {
         Choose a service to get started with fast, free quotes.
       </p>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-5 text-center">
-        {categories.map(({ name, icon: Icon, topTask }) => (
+        {categories.map(({ id, name }) => (
           <motion.div
-            key={name}
+            key={id}
             whileHover={{ scale: 1.05 }}
             className="bg-base rounded-xl p-5 cursor-pointer hover:shadow-lg transition"
-            onClick={() => openWizard('category', { prefill: { category: name } })}
+            onClick={() => openWizard('hero')}
           >
-            <Icon className="mx-auto h-8 w-8 text-primary mb-2" />
+            <HomeIcon className="mx-auto h-8 w-8 text-primary mb-2" />
             <p className="font-semibold text-gray-800">{name}</p>
-            <p className="text-xs text-gray-500 mt-1">{topTask}</p>
           </motion.div>
         ))}
       </div>
