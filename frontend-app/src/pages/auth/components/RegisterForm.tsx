@@ -27,10 +27,12 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onRegistered }) => {
   const isEmailValid = (val: string) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
 
+  const isPasswordValid = (val: string) => val.length >= 6 && /\d/.test(val);
+
   const isFormValid =
     fullName.trim().length > 0 &&
     isEmailValid(email) &&
-    password.length >= 6;
+    isPasswordValid(password);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -74,7 +76,9 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onRegistered }) => {
           value={fullName}
           onChange={(e) => setFullName(e.target.value)}
           onBlur={() => handleBlur('fullName')}
-          className="w-full p-3 border rounded-lg"
+          className={`w-full p-3 border rounded-lg ${
+            touched.fullName && !fullName.trim() ? 'border-red-500' : ''
+          }`}
         />
         {touched.fullName && !fullName.trim() && (
           <p className="text-red-500 text-sm mt-1">Full name is required</p>
@@ -87,7 +91,9 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onRegistered }) => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           onBlur={() => handleBlur('email')}
-          className="w-full p-3 border rounded-lg"
+          className={`w-full p-3 border rounded-lg ${
+            touched.email && !isEmailValid(email) ? 'border-red-500' : ''
+          }`}
         />
         {touched.email && !isEmailValid(email) && (
           <p className="text-red-500 text-sm mt-1">Enter a valid email</p>
@@ -100,7 +106,9 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onRegistered }) => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           onBlur={() => handleBlur('password')}
-          className="w-full p-3 border rounded-lg pr-20"
+          className={`w-full p-3 border rounded-lg pr-20 ${
+            touched.password && !isPasswordValid(password) ? 'border-red-500' : ''
+          }`}
         />
         <button
           type="button"
@@ -109,8 +117,10 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onRegistered }) => {
         >
           {showPassword ? 'Hide' : 'Show'}
         </button>
-        {touched.password && password.length < 6 && (
-          <p className="text-red-500 text-sm mt-1">Password must be at least 6 characters</p>
+        {touched.password && !isPasswordValid(password) && (
+          <p className="text-red-500 text-sm mt-1">
+            Password must be at least 6 characters and include a number
+          </p>
         )}
       </div>
       <Button type="submit" className="w-full flex items-center justify-center" disabled={submitting || !isFormValid}>

@@ -22,6 +22,12 @@ it('enables submit when form is valid and submits registration', async () => {
     target: { value: 'john@example.com' },
   });
   fireEvent.change(screen.getByPlaceholderText(/password/i), {
+    target: { value: 'secret' },
+  });
+
+  expect(button).toBeDisabled();
+
+  fireEvent.change(screen.getByPlaceholderText(/password/i), {
     target: { value: 'secret123' },
   });
 
