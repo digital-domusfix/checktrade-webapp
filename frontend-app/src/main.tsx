@@ -7,6 +7,7 @@ import Dashboard from './features/dashboard/Dashboard';
 import './index.css';
 import HomePage from './pages/Home/HomePage';
 import Layout from './pages/Layout/Layout';
+import NewJobPage from './pages/Job/NewJobPage';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
@@ -18,6 +19,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <Route path="/login" element={<LoginPage />} />
     <Route path="/signup" element={<SignupPage />} />
     <Route path="/dashboard" element={<Dashboard />} />
+    <Route path="/job/new" element={<NewJobPage />} />
     </Route>
   </Routes>
 </BrowserRouter>

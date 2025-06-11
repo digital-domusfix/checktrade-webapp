@@ -32,3 +32,17 @@ npm run build   # compile for production
 
 The build output is placed in `frontend-app/dist/`.
 
+## Lead Generation Wizard
+
+The home page includes a quick wizard that collects a trade category, postcode,
+desired start date, and contact info. After the final step it calls the API at
+`/api/lead-gen/jobs/draft` using the base URL defined in `VITE_API_BASE_URL` and
+navigates to `/job/new`.
+
+To run the frontend against a different API backend set the environment variable
+before starting Vite:
+
+```bash
+VITE_API_BASE_URL=https://api.example.com npm run dev
+```
+
