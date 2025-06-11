@@ -39,10 +39,10 @@ const WhyCheckTradeSection = () => (
       {benefits.map(({ icon: Icon, title, description }, i) => (
         <div
           key={i}
-          className="flex gap-4 items-start bg-cream-muted p-5 rounded-lg border border-green-muted shadow-sm hover:shadow-md transition"
+          className="flex gap-4 items-start bg-base p-5 rounded-lg border border-primary shadow-sm hover:shadow-md transition"
         >
-          <div className="p-2 bg-green-muted rounded-full">
-            <Icon className="w-6 h-6 text-green-accent" />
+          <div className="p-2 bg-primary-muted rounded-full">
+            <Icon className="w-6 h-6 text-primary" />
           </div>
           <div>
             <h4 className="font-semibold text-gray-800">{title}</h4>

@@ -11,7 +11,7 @@ const StickyFooterCTA: React.FC<Props> = ({ onClick }) => {
         <div className="text-sm font-medium text-gray-800">Ready to hire a trusted pro?</div>
         <button
           onClick={onClick}
-          className="bg-green-accent text-white font-semibold py-2 px-4 rounded-full text-sm"
+          className="bg-primary text-white font-semibold py-2 px-4 rounded-full text-sm"
         >
           Get Started
         </button>

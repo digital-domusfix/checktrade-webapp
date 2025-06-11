@@ -4,5 +4,8 @@
 
 html {
   scroll-behavior: smooth;
+  font-family: Nunito, sans-serif;
+  background-color: #FCF8F0;
+  color: #166A34;
 }
 

@@ -27,7 +27,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onRegistered }) => {
   };
 
   return submitted ? (
-    <div className="text-center text-green-accent">OTP sent! Please verify.</div>
+    <div className="text-center text-primary">OTP sent! Please verify.</div>
   ) : (
     <form onSubmit={handleSubmit} className="space-y-4">
       <input
