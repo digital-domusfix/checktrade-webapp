@@ -5,6 +5,7 @@ import CategoriesSection from './CategoriesSection';
 import TestimonialsSection from './TestimonialsSection';
 import ContractorHighlights from './ContractorHighlights';
 import WhyCheckTradeSection from './WhyCheckTradeSection';
+import LocationsGrid from './LocationsGrid';
 import NewsletterSection from './NewsletterSection';
 import { RegisterModal } from '../../components/auth/RegisterModal';
 import StickyFooterCTA from './StickyFooterCTA';
@@ -20,6 +21,7 @@ const HomePage: React.FC = () => {
       <HeroSection  />
       <HowItWorksSection onGetStartedClick={handleOpenRegister} />
       <CategoriesSection />
+      <LocationsGrid />
       <TestimonialsSection />
       <ContractorHighlights />
       <WhyCheckTradeSection />
