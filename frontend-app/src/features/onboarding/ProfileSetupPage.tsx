@@ -28,6 +28,10 @@ export default function ProfileSetupPage() {
   const [submitting, setSubmitting] = useState(false);
   const [nexting, setNexting] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+  const firstNameRef = useRef<HTMLInputElement>(null);
+  const lastNameRef = useRef<HTMLInputElement>(null);
+  const phoneRef = useRef<HTMLInputElement>(null);
+  const cityRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const userId = useAuthStore((s) => s.profile?.userId);
 
@@ -51,7 +55,7 @@ export default function ProfileSetupPage() {
     if (!lastName.trim()) e.lastName = 'Last name is required';
     if (!isPhoneValid) e.phone = 'Enter a valid 10-digit number';
     setErrors(e);
-    return Object.keys(e).length === 0;
+    return e;
   };
 
   const validateStep2 = () => {
@@ -65,7 +69,7 @@ export default function ProfileSetupPage() {
       }
     }
     setErrors(e);
-    return Object.keys(e).length === 0;
+    return e;
   };
 
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -94,17 +98,34 @@ export default function ProfileSetupPage() {
   const next = () => {
     if (step !== 1) return;
     setNexting(true);
-    if (validateStep1()) {
+    const errs = validateStep1();
+    if (Object.keys(errs).length === 0) {
       setStep(2);
     } else {
       setNexting(false);
+      const first = Object.keys(errs)[0];
+      const map: Record<string, React.RefObject<HTMLInputElement>> = {
+        firstName: firstNameRef,
+        lastName: lastNameRef,
+        phone: phoneRef,
+      };
+      map[first]?.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   };
 
   const back = () => setStep((s) => Math.max(1, s - 1));
 
   const finish = async () => {
-    if (!validateStep2()) return;
+    const errs = validateStep2();
+    if (Object.keys(errs).length > 0) {
+      const first = Object.keys(errs)[0];
+      const map: Record<string, React.RefObject<HTMLInputElement>> = {
+        city: cityRef,
+        photo: fileRef,
+      };
+      map[first]?.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
     setSubmitting(true);
     try {
       await profileService.updateProfile({
@@ -150,6 +171,7 @@ export default function ProfileSetupPage() {
                     id="firstName"
                     type="text"
                     value={firstName}
+                    ref={firstNameRef}
                     onChange={(e) => setFirstName(e.target.value)}
                     onBlur={validateStep1}
                     className={`w-full rounded-md border p-3 focus:border-primary focus:outline-none ${
@@ -175,6 +197,7 @@ export default function ProfileSetupPage() {
                     id="lastName"
                     type="text"
                     value={lastName}
+                    ref={lastNameRef}
                     onChange={(e) => setLastName(e.target.value)}
                     onBlur={validateStep1}
                     className={`w-full rounded-md border p-3 focus:border-primary focus:outline-none ${
@@ -198,6 +221,7 @@ export default function ProfileSetupPage() {
                   id="phone"
                   type="tel"
                   value={phone}
+                  ref={phoneRef}
                   onChange={(e) => setPhone(formatPhone(e.target.value))}
                   onBlur={validateStep1}
                   placeholder="(902) 555-1234"
@@ -243,6 +267,7 @@ export default function ProfileSetupPage() {
                   id="city"
                   list="city-list"
                   value={city}
+                  ref={cityRef}
                   onChange={(e) => setCity(e.target.value)}
                   onBlur={validateStep2}
                   className={`w-full rounded-md border p-3 focus:border-primary focus:outline-none ${
