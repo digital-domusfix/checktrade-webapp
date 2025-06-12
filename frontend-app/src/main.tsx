@@ -9,6 +9,7 @@ import ProfileSetupPage from './features/onboarding/ProfileSetupPage';
 import BusinessTradePage from './features/onboarding/BusinessTradePage';
 import LegalCredentialsPage from './features/onboarding/LegalCredentialsPage';
 import WelcomePage from './features/onboarding/WelcomePage';
+import OnboardingStatusPage from './features/onboarding/OnboardingStatusPage';
 import './index.css';
 import HomePage from './pages/Home/HomePage';
 import Layout from './pages/Layout/Layout';
@@ -34,8 +35,15 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
             <Route path="/verify-email" element={<EmailVerificationPage />} />
             <Route path="/profile-setup" element={<ProfileSetupPage />} />
             <Route path="/business-profile" element={<BusinessTradePage />} />
-            <Route path="/legal-credentials" element={<LegalCredentialsPage />} />
+            <Route
+              path="/legal-credentials"
+              element={<LegalCredentialsPage />}
+            />
             <Route path="/welcome" element={<WelcomePage />} />
+            <Route
+              path="/onboarding-status"
+              element={<OnboardingStatusPage />}
+            />
             <Route path="/job/new" element={<NewJobPage />} />
             <Route path="/job/success" element={<JobSuccessPage />} />
             <Route path="/post-job" element={<PostJobStep1 />} />
