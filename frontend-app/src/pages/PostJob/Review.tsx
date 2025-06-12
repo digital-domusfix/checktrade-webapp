@@ -5,6 +5,7 @@ import { Spinner } from '../../components/Spinner';
 import jobService, {
   JobCategory,
   JobSubcategory,
+  CreateJobRequest,
 } from '../../services/jobService';
 import type { Field } from './formConfigs';
 import { formConfigs } from './formConfigs';
@@ -29,6 +30,7 @@ const Review = () => {
   const [subcategory, setSubcategory] = useState<JobSubcategory>();
   const [fields, setFields] = useState<Field[]>([]);
   const [posting, setPosting] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     if (!state) return;
@@ -65,13 +67,41 @@ const Review = () => {
 
   const postDisabled = posting;
 
-  const handlePost = () => {
+  const handlePost = async () => {
+    setError('');
     setPosting(true);
-    setTimeout(() => navigate('/job/new'), 500);
+    const req: Partial<CreateJobRequest> = {
+      customerProfileId: '',
+      propertyId: '',
+      categoryId: state.categoryId,
+      subcategoryId: state.subcategoryId,
+      title: state.title,
+      description: state.description,
+    };
+    if (state.schedule.type === 'date') {
+      req.preferredStartDate = state.schedule.date;
+    } else {
+      req.urgency = state.schedule.type;
+    }
+    if (state.budget) {
+      req.budget = { min: state.budget, max: state.budget };
+    }
+    try {
+      await jobService.createJob(req as CreateJobRequest);
+      navigate('/job/new');
+    } catch {
+      setError('Failed to post job');
+      setPosting(false);
+    }
   };
 
   return (
     <div className="mx-auto max-w-md space-y-6 p-4">
+      {error && (
+        <div className="rounded bg-red-100 p-2 text-sm text-red-700">
+          {error}
+        </div>
+      )}
       <h1 className="text-sm text-gray-600">Review &amp; Post</h1>
 
       <section className="space-y-1 rounded border p-3">
