@@ -212,7 +212,7 @@ test('finish button state and successful submission', async () => {
       city: 'Halifax',
       postalCode: '',
     });
-    expect(navigateMock).toHaveBeenCalledWith('/dashboard');
+    expect(navigateMock).toHaveBeenCalledWith('/welcome');
   });
 });
 
