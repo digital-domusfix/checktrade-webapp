@@ -3,12 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Handshake } from 'lucide-react';
 import { Button } from '../components/Button';
+import { Spinner } from '../components/Spinner';
 import { useAuthStore } from '../store/useAuthStore';
 
 export default function WelcomeScreen() {
   const profile = useAuthStore((s) => s.profile);
   const navigate = useNavigate();
   const [pulse, setPulse] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // Immediately mark onboarding as complete once the user lands here so
   // subsequent visits can bypass this screen.
@@ -33,6 +35,7 @@ export default function WelcomeScreen() {
   const firstName = profile?.fullName?.split(' ')[0] || 'there';
 
   const handlePostJob = () => {
+    setLoading(true);
     localStorage.setItem('onboarding-complete', 'true');
     navigate('/job/new');
   };
@@ -66,8 +69,14 @@ export default function WelcomeScreen() {
         <motion.div variants={item}>
           <Button
             onClick={handlePostJob}
-            className={pulse ? 'animate-pulse' : ''}
+            disabled={loading}
+            className={
+              pulse
+                ? 'animate-pulse flex items-center justify-center'
+                : 'flex items-center justify-center'
+            }
           >
+            {loading && <Spinner className="mr-2 text-white" />}
             Post Your First Job
           </Button>
         </motion.div>
