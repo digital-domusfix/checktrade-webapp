@@ -26,6 +26,7 @@ export default function ProfileSetupPage() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
+  const [nexting, setNexting] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const userId = useAuthStore((s) => s.profile?.userId);
@@ -86,8 +87,18 @@ export default function ProfileSetupPage() {
     };
   }, [photo]);
 
+  useEffect(() => {
+    setNexting(false);
+  }, [step]);
+
   const next = () => {
-    if (step === 1 && validateStep1()) setStep(2);
+    if (step !== 1) return;
+    setNexting(true);
+    if (validateStep1()) {
+      setStep(2);
+    } else {
+      setNexting(false);
+    }
   };
 
   const back = () => setStep((s) => Math.max(1, s - 1));
@@ -207,8 +218,10 @@ export default function ProfileSetupPage() {
                 <Button
                   onClick={next}
                   disabled={!firstName || !lastName || !isPhoneValid}
+                  className="flex items-center justify-center"
                 >
-                  Next
+                  {nexting && <Spinner className="mr-2 text-white" />}
+                  {nexting ? 'Next…' : 'Next'}
                 </Button>
               </div>
             </motion.div>
