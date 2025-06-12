@@ -14,6 +14,11 @@ app.post('/api/identity/register', (req, res) => {
     return res.status(400).json({ error: 'fullName, email, and password required' });
   }
 
+  const existingUser = users.find((u) => u.email === email);
+  if (existingUser) {
+    return res.status(409).json({ error: 'Email already registered' });
+  }
+
   const user = { id: uuidv4(), fullName, email, password };
   users.push(user);
 
