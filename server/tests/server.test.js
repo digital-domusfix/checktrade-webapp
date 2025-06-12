@@ -56,6 +56,24 @@ describe('API', () => {
     expect(users[0]).toMatchObject({ ...payload, fullName: '' });
   });
 
+  test('registration fails with weak password', async () => {
+    const res = await request(app)
+      .post('/api/identity/register')
+      .send({ email: 'weak@example.com', password: 'short1', role: 'homeowner' });
+
+    expect(res.status).toBe(400);
+    expect(res.body.error).toMatch(/password/i);
+  });
+
+  test('registration fails without role', async () => {
+    const res = await request(app)
+      .post('/api/identity/register')
+      .send({ email: 'norole@example.com', password: 'secret123' });
+
+    expect(res.status).toBe(400);
+    expect(res.body.error).toMatch(/role/);
+  });
+
   test('create job for user', async () => {
     const userRes = await request(app)
       .post('/api/identity/register')

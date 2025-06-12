@@ -62,7 +62,7 @@ it('shows validation errors on blur when fields are invalid', async () => {
   });
   fireEvent.blur(screen.getByLabelText(/password/i));
   expect(
-    await screen.findByText(/password must be at least 6 characters/i),
+    await screen.findByText(/password must be at least 8 characters/i),
   ).toBeInTheDocument();
 
   expect(screen.getByRole('button', { name: /sign up/i })).toBeDisabled();
@@ -96,7 +96,7 @@ it('applies ARIA attributes to invalid fields', async () => {
   });
   fireEvent.blur(screen.getByLabelText(/password/i));
   const passwordError = await screen.findByText(
-    /password must be at least 6 characters/i,
+    /password must be at least 8 characters/i,
   );
   const passwordInput = screen.getByLabelText(/^password$/i);
   expect(passwordInput).toHaveAttribute('aria-invalid', 'true');

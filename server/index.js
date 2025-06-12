@@ -20,6 +20,12 @@ app.post('/api/identity/register', (req, res) => {
       .json({ error: 'email, password, and role required' });
   }
 
+  if (password.length < 8 || !/\d/.test(password)) {
+    return res
+      .status(400)
+      .json({ error: 'Password must be at least 8 characters and contain a number' });
+  }
+
   const existingUser = users.find((u) => u.email === email);
   if (existingUser) {
     return res.status(409).json({ error: 'Email already registered' });

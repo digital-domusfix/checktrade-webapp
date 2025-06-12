@@ -30,7 +30,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onRegistered }) => {
 
   const isEmailValid = (val: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
 
-  const isPasswordValid = (val: string) => val.length >= 6 && /\d/.test(val);
+  const isPasswordValid = (val: string) => val.length >= 8 && /\d/.test(val);
 
   const isFormValid =
     isEmailValid(email) &&
@@ -177,7 +177,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onRegistered }) => {
                 id="register-password-error"
                 className="mt-1 text-sm italic text-error transition-opacity"
               >
-                Password must be at least 6 characters and include a number
+                Password must be at least 8 characters and include a number
               </p>
             </div>
           )}
