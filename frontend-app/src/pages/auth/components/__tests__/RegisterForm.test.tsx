@@ -34,7 +34,9 @@ it('enables submit when form is valid and submits registration', async () => {
   expect(button).not.toBeDisabled();
   fireEvent.submit(button);
 
-  await waitFor(() => expect(onRegistered).toHaveBeenCalledWith('user1'));
+  await waitFor(() =>
+    expect(onRegistered).toHaveBeenCalledWith('user1', 'john@example.com')
+  );
 });
 
 it('shows validation errors on blur when fields are invalid', async () => {
@@ -82,6 +84,8 @@ it('disables submit while submitting and triggers success callback', async () =>
 
   expect(button).toBeDisabled();
 
-  await waitFor(() => expect(onRegistered).toHaveBeenCalledWith('user1'));
+  await waitFor(() =>
+    expect(onRegistered).toHaveBeenCalledWith('user1', 'john@example.com')
+  );
   expect(screen.getByText(/otp sent/i)).toBeInTheDocument();
 });
