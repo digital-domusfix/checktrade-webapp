@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '../../components/Button';
 import { Spinner } from '../../components/Spinner';
 import profileService from '../../services/profileService';
+import { useAuthStore } from '../../store/useAuthStore';
 
 const cities = [
   'Halifax',
@@ -26,6 +27,7 @@ export default function ProfileSetupPage() {
   const [submitting, setSubmitting] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
+  const profile = useAuthStore((s) => s.profile);
 
   const phoneDigits = phone.replace(/\D/g, '').slice(0, 10);
   const isPhoneValid = phoneDigits.length === 10;
@@ -80,6 +82,7 @@ export default function ProfileSetupPage() {
     setSubmitting(true);
     try {
       await profileService.updateProfile({
+        userId: profile?.userId || '',
         firstName,
         lastName,
         phone: phoneDigits,
