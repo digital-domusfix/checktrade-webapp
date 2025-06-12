@@ -15,11 +15,18 @@ global.URL.createObjectURL = vi.fn();
 vi.mock('../../../services/legalService', () => ({
   default: {
     uploadDocument: vi.fn(() => Promise.resolve({ id: 'd1' })),
-    submitCredentials: vi.fn(() => Promise.resolve()),
+    submitCredentials: vi.fn(() => Promise.resolve({ status: 'approved' })),
   },
 }));
 
 const uploadMock = vi.mocked(legalService.uploadDocument);
+const submitMock = vi.mocked(legalService.submitCredentials);
+
+beforeEach(() => {
+  navigateMock.mockClear();
+  uploadMock.mockClear();
+  submitMock.mockClear();
+});
 
 test('submit disabled until required docs and terms provided', async () => {
   render(<LegalCredentialsPage />);
@@ -49,4 +56,28 @@ test('shows error on invalid file type', () => {
   fireEvent.change(insuranceInput, { target: { files: [bad] } });
 
   expect(screen.getByText(/unsupported format/i)).toBeInTheDocument();
+});
+
+test('navigates to status page on successful submit', async () => {
+  render(<LegalCredentialsPage />);
+
+  fireEvent.click(screen.getByLabelText(/sole trader/i));
+  const file = new File(['a'], 'a.pdf', { type: 'application/pdf' });
+  fireEvent.change(screen.getByLabelText(/proof of insurance/i), {
+    target: { files: [file] },
+  });
+  fireEvent.change(screen.getByLabelText(/government id/i), {
+    target: { files: [file] },
+  });
+  await waitFor(() => expect(uploadMock).toHaveBeenCalledTimes(2));
+  fireEvent.click(screen.getByLabelText(/i agree/i));
+
+  fireEvent.click(screen.getByRole('button', { name: /submit for approval/i }));
+
+  await waitFor(() => {
+    expect(submitMock).toHaveBeenCalled();
+    expect(navigateMock).toHaveBeenCalledWith('/onboarding-status', {
+      state: { status: 'approved' },
+    });
+  });
 });

@@ -70,13 +70,14 @@ export default function LegalCredentialsPage() {
     if (Object.keys(e).length > 0) return;
     setSubmitting(true);
     try {
-      await legalService.submitCredentials({
+      const res = await legalService.submitCredentials({
         insuranceId: docIds.insurance,
         businessId: docIds.business,
         govId: docIds.govId!,
         soleTrader,
       });
-      navigate('/welcome');
+      const status = (res as any)?.status ?? 'pending';
+      navigate('/onboarding-status', { state: { status } });
     } finally {
       setSubmitting(false);
     }

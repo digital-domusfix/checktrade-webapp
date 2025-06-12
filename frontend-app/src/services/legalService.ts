@@ -19,9 +19,17 @@ interface SubmitPayload {
   soleTrader: boolean;
 }
 
-const submitCredentials = async (payload: SubmitPayload) => {
+export interface SubmitResult {
+  status: 'approved' | 'pending';
+}
+
+const submitCredentials = async (
+  payload: SubmitPayload,
+): Promise<SubmitResult> => {
   await new Promise((res) => setTimeout(res, 300));
-  return http.post('/api/identity/legal', payload);
+  await http.post('/api/identity/legal', payload);
+  // Simulate approval decision from backend
+  return { status: Math.random() < 0.5 ? 'approved' : 'pending' };
 };
 
 export default { uploadDocument, submitCredentials };
