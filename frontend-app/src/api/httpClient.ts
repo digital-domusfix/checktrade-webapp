@@ -1,3 +1,6 @@
+
+export default httpClient;
+
 import axios from 'axios';
 
 const httpClient = axios.create({
@@ -17,3 +20,4 @@ httpClient.interceptors.response.use(
 );
 
 export default httpClient;
+

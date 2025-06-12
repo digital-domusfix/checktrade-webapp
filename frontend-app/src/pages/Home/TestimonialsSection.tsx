@@ -18,7 +18,9 @@ const testimonials = [
 ];
 
 const TestimonialsSection = () => {
-  const [motionDiv, setMotionDiv] = useState<React.ComponentType<any> | null>(null);
+  const [motionDiv, setMotionDiv] = useState<React.ComponentType<any> | null>(
+    null,
+  );
   const [reduceMotion, setReduceMotion] = useState(false);
 
   useEffect(() => {
@@ -54,24 +56,32 @@ const TestimonialsSection = () => {
   const hoverProps = reduceMotion ? {} : { whileHover: { scale: 1.03 } };
 
   return (
-    <SectionWrapper id="testimonials" title="What Homeowners Say" className="bg-white">
+    <SectionWrapper
+      id="testimonials"
+      title="What Homeowners Say"
+      className="bg-white"
+    >
       <Container
-        className="overflow-x-auto flex gap-6 snap-x sm:grid sm:grid-cols-2 sm:overflow-visible"
+        className="flex snap-x gap-6 overflow-x-auto sm:grid sm:grid-cols-2 sm:overflow-visible"
         {...containerProps}
       >
         {testimonials.map((t, i) => (
           <Item
             key={i}
-            className="shrink-0 snap-center bg-base p-6 rounded shadow-sm flex gap-4 items-start"
+            className="flex shrink-0 snap-center items-start gap-4 rounded bg-base p-6 shadow-sm"
             variants={itemVariants}
             {...hoverProps}
           >
-            <img src={t.avatar} alt={t.name} className="w-12 h-12 rounded-full object-cover" />
+            <img
+              src={t.avatar}
+              alt={t.name}
+              className="size-12 rounded-full object-cover"
+            />
             <div>
               <p className="italic text-gray-700">{t.quote}</p>
-              <div className="flex items-center text-yellow-500 my-2">
+              <div className="my-2 flex items-center text-yellow-500">
                 {Array.from({ length: 5 }).map((_, idx) => (
-                  <Star key={idx} className="w-4 h-4 fill-current" />
+                  <Star key={idx} className="size-4 fill-current" />
                 ))}
               </div>
               <p className="font-semibold text-gray-800">

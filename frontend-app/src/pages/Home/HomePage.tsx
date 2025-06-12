@@ -15,7 +15,7 @@ const HomePage: React.FC = () => {
 
   return (
     <main>
-      <HeroSection /> 
+      <HeroSection />
       <HowItWorksSection onGetStartedClick={() => openWizard('howItWorks')} />
       <CategoriesSection />
       <LocationsGrid />

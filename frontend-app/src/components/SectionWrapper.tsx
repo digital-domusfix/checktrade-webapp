@@ -7,14 +7,18 @@ interface Props {
   className?: string; // ✅ allow section-level styling
 }
 
-export const SectionWrapper: React.FC<Props> = ({ id, title, children, className }) => (
-  <section id={id} className={`py-12 px-4 sm:px-6 lg:px-8 ${className || ''}`}>
+export const SectionWrapper: React.FC<Props> = ({
+  id,
+  title,
+  children,
+  className,
+}) => (
+  <section id={id} className={`px-4 py-12 sm:px-6 lg:px-8 ${className || ''}`}>
     {title && (
-      <h2 className="text-2xl sm:text-3xl font-bold text-center mb-6 text-gray-800">
+      <h2 className="mb-6 text-center text-2xl font-bold text-gray-800 sm:text-3xl">
         {title}
       </h2>
     )}
-    <div className="max-w-6xl mx-auto">{children}</div>
+    <div className="mx-auto max-w-6xl">{children}</div>
   </section>
 );
-

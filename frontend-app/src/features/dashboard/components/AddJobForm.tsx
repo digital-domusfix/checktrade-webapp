@@ -33,13 +33,16 @@ export const AddJobForm = ({ property, onCreated }: Props) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 p-4 max-w-md mx-auto">
+    <form onSubmit={handleSubmit} className="mx-auto max-w-md space-y-4 p-4">
       <div className="text-sm text-gray-700">
         Creating job for{' '}
         <strong>{property.nickname || property.address?.line1}</strong>
       </div>
       <div className="space-y-1">
-        <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+        <label
+          htmlFor="title"
+          className="block text-sm font-medium text-gray-700"
+        >
           Job title
         </label>
         <input
@@ -48,11 +51,14 @@ export const AddJobForm = ({ property, onCreated }: Props) => {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Job title"
-          className="w-full border p-2 rounded"
+          className="w-full rounded border p-2"
         />
       </div>
       <div className="space-y-1">
-        <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+        <label
+          htmlFor="description"
+          className="block text-sm font-medium text-gray-700"
+        >
           Job description
         </label>
         <textarea
@@ -60,7 +66,7 @@ export const AddJobForm = ({ property, onCreated }: Props) => {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Job description"
-          className="w-full border p-2 rounded"
+          className="w-full rounded border p-2"
         />
       </div>
       <Button type="submit" disabled={submitting || !title}>
