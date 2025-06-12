@@ -51,7 +51,7 @@ const HeroSection = () => {
         </div>
 
         <img
-          src="/images/hero-working-pro.jpg"
+          src="/images/hero-working-pro.png"
           alt="Local contractor working"
           className="hidden w-full rounded-lg object-cover shadow-md md:block"
         />
