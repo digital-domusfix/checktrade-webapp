@@ -22,7 +22,18 @@ beforeEach(() => {
 
 test('shows first name in welcome message', () => {
   render(<WelcomeScreen />);
-  expect(screen.getByText(/welcome, john/i)).toBeInTheDocument();
+  expect(
+    screen.getByRole('heading', { name: /welcome, john/i }),
+  ).toBeInTheDocument();
+});
+
+test('handshake icon is hidden from assistive tech and sr message exists', () => {
+  const { container } = render(<WelcomeScreen />);
+  const icon = container.querySelector('svg.lucide-handshake');
+  expect(icon).toHaveAttribute('aria-hidden', 'true');
+  expect(
+    screen.getByText(/welcome, john! you're ready to post your first job/i),
+  ).toHaveClass('sr-only');
 });
 
 test('sets flag on mount and CTA navigates', async () => {
