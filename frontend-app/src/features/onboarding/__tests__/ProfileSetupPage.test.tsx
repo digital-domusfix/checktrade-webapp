@@ -104,7 +104,7 @@ test('advances to step 2 when step 1 is valid', async () => {
 
   await screen.findByRole('button', { name: /finish/i });
   expect(
-    screen.getByRole('heading', { name: /step 2 of 2/i })
+    screen.getByRole('heading', { name: /step 2 of 2/i }),
   ).toBeInTheDocument();
 });
 
@@ -212,6 +212,6 @@ test('finish button state and successful submission', async () => {
       city: 'Halifax',
       postalCode: '',
     });
-    expect(navigateMock).toHaveBeenCalledWith('/dashboard');
+    expect(navigateMock).toHaveBeenCalledWith('/welcome');
   });
 });

@@ -11,9 +11,10 @@ const createJobMock = vi.mocked(jobService.createJob);
 
 const property = { id: 'p1', nickname: 'Home' } as any;
 
-it('creates job', async () => {
+it('creates job and marks posted flag', async () => {
   createJobMock.mockResolvedValue({});
   const onCreated = vi.fn();
+  localStorage.clear();
   render(<AddJobForm property={property} onCreated={onCreated} />);
 
   fireEvent.change(screen.getByPlaceholderText('Job title'), {
@@ -22,5 +23,6 @@ it('creates job', async () => {
   fireEvent.submit(screen.getByRole('button'));
 
   await waitFor(() => expect(createJobMock).toHaveBeenCalled());
+  expect(localStorage.getItem('hasPostedJob')).toBe('true');
   expect(onCreated).toHaveBeenCalled();
 });

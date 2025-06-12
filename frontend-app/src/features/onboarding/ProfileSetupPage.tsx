@@ -144,7 +144,7 @@ export default function ProfileSetupPage() {
         city,
         postalCode,
       });
-      navigate('/dashboard');
+      navigate('/welcome');
     } catch (err: any) {
       const message = err?.message || 'Could not save profile, try again';
       setErrors({ finish: message });
