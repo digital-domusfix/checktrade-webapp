@@ -10,6 +10,7 @@ import { useAuthStore } from '../../store/useAuthStore';
 
 const cities = ['Halifax','Dartmouth','Sydney','Truro','New Glasgow','Yarmouth'];
 const radiusOptions = [5,10,15,25];
+const LOCAL_KEY = 'business-trade-form';
 
 export default function BusinessTradePage() {
   const userId = useAuthStore((s) => s.profile?.userId);
@@ -27,6 +28,37 @@ export default function BusinessTradePage() {
   const [errors, setErrors] = useState<Record<string,string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [toast, setToast] = useState('');
+
+  useEffect(() => {
+    const saved = localStorage.getItem(LOCAL_KEY);
+    if (saved) {
+      try {
+        const d = JSON.parse(saved);
+        setBusinessName(d.businessName || '');
+        setCategoryId(d.tradeCategory || '');
+        setSelectedSubs(d.subcategories || []);
+        setYearsExp(d.yearsExp || '');
+        setCity(d.city || '');
+        setPostalCode(d.postalCode || '');
+        setRadius(d.radius || '');
+      } catch {
+        // ignore
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    const data = {
+      businessName,
+      tradeCategory: categoryId,
+      subcategories: selectedSubs,
+      yearsExp,
+      city,
+      postalCode,
+      radius,
+    };
+    localStorage.setItem(LOCAL_KEY, JSON.stringify(data));
+  }, [businessName, categoryId, selectedSubs, yearsExp, city, postalCode, radius]);
 
   useEffect(() => {
     jobService
@@ -81,7 +113,8 @@ export default function BusinessTradePage() {
         postalCode: postalCode || undefined,
         travelRadius: Number(radius),
       });
-      navigate('/welcome');
+      localStorage.removeItem(LOCAL_KEY);
+      navigate('/legal-credentials');
     } catch (err: any) {
       const msg = err?.message || 'Could not save profile';
       setToast(msg);
@@ -125,6 +158,7 @@ export default function BusinessTradePage() {
               className={`w-full rounded border p-2 ${
                 errors.category ? 'border-error text-error' : 'border-brand-gray'
               }`}
+              aria-invalid={!!errors.category}
             >
               <option value="">Select trade</option>
               {categories.map((c) => (
@@ -134,7 +168,9 @@ export default function BusinessTradePage() {
               ))}
             </select>
             {errors.category && (
-              <p className="text-sm italic text-error">{errors.category}</p>
+              <p className="text-sm italic text-error" role="alert">
+                {errors.category}
+              </p>
             )}
           </div>
           <AnimatePresence>
@@ -160,7 +196,9 @@ export default function BusinessTradePage() {
                   ))}
                 </div>
                 {errors.subs && (
-                  <p className="text-sm italic text-error">{errors.subs}</p>
+                  <p className="text-sm italic text-error" role="alert">
+                    {errors.subs}
+                  </p>
                 )}
               </motion.div>
             )}
@@ -180,9 +218,12 @@ export default function BusinessTradePage() {
               className={`w-full rounded border p-2 ${
                 errors.yearsExp ? 'border-error text-error' : 'border-brand-gray'
               }`}
+              aria-invalid={!!errors.yearsExp}
             />
             {errors.yearsExp && (
-              <p className="text-sm italic text-error">{errors.yearsExp}</p>
+              <p className="text-sm italic text-error" role="alert">
+                {errors.yearsExp}
+              </p>
             )}
           </div>
           <div className="space-y-1">
@@ -198,6 +239,7 @@ export default function BusinessTradePage() {
               className={`w-full rounded border p-2 ${
                 errors.city ? 'border-error text-error' : 'border-brand-gray'
               }`}
+              aria-invalid={!!errors.city}
             />
             <datalist id="city-list">
               {cities.map((c) => (
@@ -208,7 +250,9 @@ export default function BusinessTradePage() {
               <p className="text-sm italic text-gray-500">Check your spelling</p>
             )}
             {errors.city && (
-              <p className="text-sm italic text-error">{errors.city}</p>
+              <p className="text-sm italic text-error" role="alert">
+                {errors.city}
+              </p>
             )}
           </div>
           <div className="space-y-1">
@@ -225,9 +269,12 @@ export default function BusinessTradePage() {
               className={`w-full rounded border p-2 ${
                 errors.postalCode ? 'border-error text-error' : 'border-brand-gray'
               }`}
+              aria-invalid={!!errors.postalCode}
             />
             {errors.postalCode && (
-              <p className="text-sm italic text-error">{errors.postalCode}</p>
+              <p className="text-sm italic text-error" role="alert">
+                {errors.postalCode}
+              </p>
             )}
           </div>
           <div className="space-y-1">
@@ -239,6 +286,7 @@ export default function BusinessTradePage() {
               className={`w-full rounded border p-2 ${
                 errors.radius ? 'border-error text-error' : 'border-brand-gray'
               }`}
+              aria-invalid={!!errors.radius}
             >
               <option value="">Select radius</option>
               {radiusOptions.map((r) => (
@@ -246,14 +294,23 @@ export default function BusinessTradePage() {
               ))}
             </select>
             {errors.radius && (
-              <p className="text-sm italic text-error">{errors.radius}</p>
+              <p className="text-sm italic text-error" role="alert">
+                {errors.radius}
+              </p>
             )}
           </div>
-          <div className="pt-2">
+          <div className="flex justify-between pt-2 gap-2">
+            <Button
+              onClick={() => navigate('/profile-setup')}
+              variant="secondary"
+              className="w-1/2"
+            >
+              Back
+            </Button>
             <Button
               onClick={handleSubmit}
               disabled={!canSubmit}
-              className="flex items-center justify-center w-full"
+              className="flex items-center justify-center w-1/2"
             >
               {submitting && <Spinner className="mr-2 text-white" />}
               {submitting ? 'Next…' : 'Next'}

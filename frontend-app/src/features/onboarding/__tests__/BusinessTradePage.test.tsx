@@ -63,6 +63,6 @@ test('requires valid postal code', async () => {
 
   await waitFor(() => {
     expect(completeMock).toHaveBeenCalled();
-    expect(navigateMock).toHaveBeenCalledWith('/welcome');
+    expect(navigateMock).toHaveBeenCalledWith('/legal-credentials');
   });
  });
