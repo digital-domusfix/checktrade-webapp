@@ -24,6 +24,21 @@ describe('API', () => {
     expect(users[0]).toMatchObject(payload);
   });
 
+  test('registration fails when email already exists', async () => {
+    const payload = {
+      fullName: 'Existing User',
+      email: 'existing@example.com',
+      password: 'secret123',
+    };
+
+    await request(app).post('/api/identity/register').send(payload);
+    const res = await request(app).post('/api/identity/register').send(payload);
+
+    expect(res.status).toBe(409);
+    expect(res.body.error).toBeDefined();
+    expect(users.length).toBe(1);
+  });
+
   test('create job for user', async () => {
     const userRes = await request(app)
       .post('/api/identity/register')
