@@ -104,7 +104,7 @@ test('advances to step 2 when step 1 is valid', async () => {
 
   await screen.findByRole('button', { name: /finish/i });
   expect(
-    screen.getByRole('heading', { name: /step 2 of 2/i })
+    screen.getByRole('heading', { name: /step 2 of 2/i }),
   ).toBeInTheDocument();
 });
 
@@ -214,4 +214,16 @@ test('finish button state and successful submission', async () => {
     });
     expect(navigateMock).toHaveBeenCalledWith('/dashboard');
   });
+});
+
+test('skip link is hidden when prop is false', () => {
+  render(<ProfileSetupPage showSkipLink={false} />);
+
+  expect(screen.queryByText(/skip for now/i)).toBeNull();
+});
+
+test('skip link is shown when prop is true', () => {
+  render(<ProfileSetupPage showSkipLink />);
+
+  expect(screen.getByText(/skip for now/i)).toBeInTheDocument();
 });

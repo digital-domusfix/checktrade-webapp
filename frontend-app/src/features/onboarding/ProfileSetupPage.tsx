@@ -16,7 +16,20 @@ const cities = [
   'Yarmouth',
 ];
 
-export default function ProfileSetupPage() {
+interface ProfileSetupPageProps {
+  /**
+   * Show the "Skip for now" link. Defaults to the value of the
+   * `VITE_SHOW_PROFILE_SKIP_LINK` environment variable (true unless it is
+   * explicitly set to "false").
+   */
+  showSkipLink?: boolean;
+}
+
+export default function ProfileSetupPage({
+  showSkipLink,
+}: ProfileSetupPageProps = {}) {
+  const shouldShowSkip =
+    showSkipLink ?? import.meta.env.VITE_SHOW_PROFILE_SKIP_LINK !== 'false';
   const [step, setStep] = useState(1);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -246,9 +259,14 @@ export default function ProfileSetupPage() {
                 )}
               </div>
               <div className="flex justify-end gap-2">
-                <a href="/dashboard" className="text-sm text-primary underline">
-                  Skip for now
-                </a>
+                {shouldShowSkip && (
+                  <a
+                    href="/dashboard"
+                    className="text-sm text-primary underline"
+                  >
+                    Skip for now
+                  </a>
+                )}
                 <Button
                   onClick={next}
                   disabled={!firstName || !lastName || !isPhoneValid}
