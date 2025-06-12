@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "lint": "eslint --ext ts,tsx src",
+    "lint": "eslint \"src/**/*.{ts,tsx}\"",
     "format": "prettier --write .",
     "stylelint": "stylelint \"src/**/*.css\"",
     "test": "vitest run"
@@ -27,6 +27,7 @@
     "zustand": "^5.0.5"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^2.1.2",
     "@testing-library/jest-dom": "^6.1.5",
     "@testing-library/react": "^14.1.2",
     "@types/react": "^18.0.0",
