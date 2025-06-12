@@ -147,12 +147,9 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onRegistered }) => {
         <FcGoogle size={20} />
         <span className="text-sm font-medium text-gray-800">Continue with Google</span>
       </button>
-      <p className="text-center text-sm text-gray-600">
-        Already have an account?{' '}
-        <a href="/login" className="underline text-primary">
-          Log in
-        </a>
-      </p>
+      <a href="/login" className="block text-center text-sm underline text-primary">
+        Already have an account? Log in
+      </a>
     </form>
   );
 };
