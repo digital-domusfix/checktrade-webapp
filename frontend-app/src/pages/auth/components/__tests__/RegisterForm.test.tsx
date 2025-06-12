@@ -2,15 +2,20 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { vi } from 'vitest';
 import { RegisterForm } from '../RegisterForm';
+import { RegisterScreen } from '../../../../screens/RegisterScreen';
 
 const registerMock = vi.fn().mockResolvedValue('user1');
+const navigateMock = vi.fn();
 vi.mock('../../../../store/useAuthStore', () => ({
   useAuthStore: (selector: any) => selector({ register: registerMock }),
 }));
+vi.mock('react-router-dom', async () => {
+  const actual: any = await vi.importActual('react-router-dom');
+  return { ...actual, useNavigate: () => navigateMock };
+});
 
-it('enables submit when form is valid and submits registration', async () => {
-  const onRegistered = vi.fn();
-  render(<RegisterForm onRegistered={onRegistered} />);
+it('enables submit when form is valid and navigates to verification screen', async () => {
+  render(<RegisterScreen />);
 
   const button = screen.getByRole('button', { name: /sign up/i });
   expect(button).toBeDisabled();
@@ -35,7 +40,9 @@ it('enables submit when form is valid and submits registration', async () => {
   fireEvent.submit(button);
 
   await waitFor(() =>
-    expect(onRegistered).toHaveBeenCalledWith('user1', 'john@example.com')
+    expect(navigateMock).toHaveBeenCalledWith(
+      '/verify-email?uid=user1&email=john%40example.com'
+    )
   );
 });
 
@@ -62,12 +69,11 @@ it('shows validation errors on blur when fields are invalid', async () => {
   expect(screen.getByRole('button', { name: /sign up/i })).toBeDisabled();
 });
 
-it('disables submit while submitting and triggers success callback', async () => {
-  const onRegistered = vi.fn();
+it('disables submit while submitting and navigates on success', async () => {
   const registerPromise = new Promise<string>((res) => setTimeout(() => res('user1'), 10));
   registerMock.mockReturnValueOnce(registerPromise);
 
-  render(<RegisterForm onRegistered={onRegistered} />);
+  render(<RegisterScreen />);
 
   fireEvent.change(screen.getByPlaceholderText(/full name/i), {
     target: { value: 'John Doe' },
@@ -85,7 +91,8 @@ it('disables submit while submitting and triggers success callback', async () =>
   expect(button).toBeDisabled();
 
   await waitFor(() =>
-    expect(onRegistered).toHaveBeenCalledWith('user1', 'john@example.com')
+    expect(navigateMock).toHaveBeenCalledWith(
+      '/verify-email?uid=user1&email=john%40example.com'
+    )
   );
-  expect(screen.getByText(/otp sent/i)).toBeInTheDocument();
 });
