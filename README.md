@@ -46,3 +46,9 @@ before starting Vite:
 VITE_API_BASE_URL=https://api.example.com npm run dev
 ```
 
+## Profile Setup Page
+
+The `ProfileSetupPage` shows a **Skip for now** link by default. Set
+`VITE_SHOW_PROFILE_SKIP_LINK=false` when starting Vite to hide this link or pass
+`showSkipLink={false}` to the component manually.
+
