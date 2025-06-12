@@ -36,7 +36,7 @@ export const convertJobDraft = (token: string) =>
     headers: { 'Auto-Save-Token': token },
   });
 
-export interface  JobCategoryId {
+export interface JobCategoryId {
   value: string;
 }
 export interface JobCategory {
@@ -44,8 +44,8 @@ export interface JobCategory {
   name: string;
 }
 
-export interface JobCategories{
-  categories: JobCategory[]
+export interface JobCategories {
+  categories: JobCategory[];
 }
 export interface JobSubcategory {
   id: string;

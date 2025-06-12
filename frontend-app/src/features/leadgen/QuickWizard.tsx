@@ -2,16 +2,25 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { LeadGenService } from '../../services/leadGenService';
-import jobService, { JobCategory, JobSubcategory } from '../../services/jobService';
+import jobService, {
+  JobCategory,
+  JobSubcategory,
+} from '../../services/jobService';
 import { logEvent } from '../../utils/analytics';
 import { Button } from '../../components/Button';
 
 const questions: Record<string, string[]> = {
-  'Leaky faucet': ['Is the faucet dripping or spraying?', 'Single handle or two knobs?'],
+  'Leaky faucet': [
+    'Is the faucet dripping or spraying?',
+    'Single handle or two knobs?',
+  ],
   'Toilet issue': ['Does it flush?', 'Is it leaking around the base?'],
   Lighting: ['What kind of lights?', 'Ceiling or wall-mounted?'],
   'AC not working': ['Is the fan running?', 'When did the issue start?'],
-  'Kitchen remodel': ['Full remodel or cosmetic?', 'Include plumbing/electrical changes?'],
+  'Kitchen remodel': [
+    'Full remodel or cosmetic?',
+    'Include plumbing/electrical changes?',
+  ],
 };
 
 interface Props {
@@ -80,10 +89,10 @@ export const QuickWizard = ({ onStart, onComplete }: Props) => {
   };
 
   return (
-    <div className="bg-white p-5 sm:p-6 rounded shadow-md text-left space-y-6 max-w-xl mx-auto">
+    <div className="mx-auto max-w-xl space-y-6 rounded bg-white p-5 text-left shadow-md sm:p-6">
       {step === 0 && (
         <motion.section layout>
-          <h3 className="font-semibold mb-3">What kind of help do you need?</h3>
+          <h3 className="mb-3 font-semibold">What kind of help do you need?</h3>
           <div className="grid grid-cols-2 gap-2">
             {categories.map((c) => (
               <button
@@ -92,7 +101,7 @@ export const QuickWizard = ({ onStart, onComplete }: Props) => {
                   setCategory(c);
                   next();
                 }}
-                className="border border-primary rounded p-2 text-sm hover:bg-primary hover:text-white"
+                className="rounded border border-primary p-2 text-sm hover:bg-primary hover:text-white"
               >
                 {c.name}
               </button>
@@ -103,7 +112,7 @@ export const QuickWizard = ({ onStart, onComplete }: Props) => {
 
       {step === 1 && category && (
         <motion.section layout>
-          <h3 className="font-semibold mb-3">What best describes your job?</h3>
+          <h3 className="mb-3 font-semibold">What best describes your job?</h3>
           <div className="grid grid-cols-2 gap-2">
             {subcategories.map((sub) => (
               <button
@@ -112,7 +121,7 @@ export const QuickWizard = ({ onStart, onComplete }: Props) => {
                   setSubcategory(sub);
                   next();
                 }}
-                className="border border-primary rounded p-2 text-sm hover:bg-primary hover:text-white"
+                className="rounded border border-primary p-2 text-sm hover:bg-primary hover:text-white"
               >
                 {sub.name}
               </button>
@@ -123,7 +132,7 @@ export const QuickWizard = ({ onStart, onComplete }: Props) => {
 
       {step === 2 && subcategory && (
         <motion.section layout className="space-y-4">
-          <h3 className="font-semibold mb-3">Just a few details</h3>
+          <h3 className="mb-3 font-semibold">Just a few details</h3>
           {questions[subcategory.name]?.map((q, i) => (
             <div key={i} className="space-y-1">
               <label htmlFor={`q${i}`} className="text-sm font-medium">
@@ -133,8 +142,10 @@ export const QuickWizard = ({ onStart, onComplete }: Props) => {
                 id={`q${i}`}
                 type="text"
                 value={answers[q] || ''}
-                onChange={(e) => setAnswers({ ...answers, [q]: e.target.value })}
-                className="w-full border p-2 rounded"
+                onChange={(e) =>
+                  setAnswers({ ...answers, [q]: e.target.value })
+                }
+                className="w-full rounded border p-2"
               />
             </div>
           ))}
@@ -146,7 +157,7 @@ export const QuickWizard = ({ onStart, onComplete }: Props) => {
               id="notes"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              className="w-full border p-2 rounded"
+              className="w-full rounded border p-2"
               placeholder="Optional — describe your situation"
             />
           </div>
@@ -165,9 +176,11 @@ export const QuickWizard = ({ onStart, onComplete }: Props) => {
             value={postcode}
             onChange={(e) => setPostcode(e.target.value)}
             placeholder="e.g. B3J 2K9"
-            className="w-full border p-2 rounded"
+            className="w-full rounded border p-2"
           />
-          <Button onClick={next} disabled={!postcode}>Continue</Button>
+          <Button onClick={next} disabled={!postcode}>
+            Continue
+          </Button>
         </motion.section>
       )}
 
@@ -181,7 +194,7 @@ export const QuickWizard = ({ onStart, onComplete }: Props) => {
             type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
-            className="w-full border p-2 rounded"
+            className="w-full rounded border p-2"
           />
           <div>
             <button
@@ -189,7 +202,7 @@ export const QuickWizard = ({ onStart, onComplete }: Props) => {
                 setDate('ASAP');
                 next();
               }}
-              className="underline text-sm text-primary"
+              className="text-sm text-primary underline"
             >
               ASAP
             </button>
@@ -208,7 +221,7 @@ export const QuickWizard = ({ onStart, onComplete }: Props) => {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full border p-2 rounded"
+            className="w-full rounded border p-2"
           />
           <label htmlFor="phone" className="block text-sm font-medium">
             Phone (optional)
@@ -218,21 +231,27 @@ export const QuickWizard = ({ onStart, onComplete }: Props) => {
             type="tel"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            className="w-full border p-2 rounded"
+            className="w-full rounded border p-2"
           />
-          <Button onClick={next} disabled={!email}>Next</Button>
+          <Button onClick={next} disabled={!email}>
+            Next
+          </Button>
         </motion.section>
       )}
 
       {step === 6 && (
-        <motion.section layout className="text-center space-y-4">
-          <h4 className="font-semibold text-lg">One last step!</h4>
-          <p className="text-gray-600 text-sm">
-            We’ve saved your job. Create a free account to message contractors and track your quotes.
+        <motion.section layout className="space-y-4 text-center">
+          <h4 className="text-lg font-semibold">One last step!</h4>
+          <p className="text-sm text-gray-600">
+            We’ve saved your job. Create a free account to message contractors
+            and track your quotes.
           </p>
           <Button onClick={handleSubmit}>Register & View Quotes</Button>
           <p className="text-xs text-gray-400">
-            Already have an account? <a href="/login" className="underline text-primary">Sign in</a>
+            Already have an account?{' '}
+            <a href="/login" className="text-primary underline">
+              Sign in
+            </a>
           </p>
         </motion.section>
       )}

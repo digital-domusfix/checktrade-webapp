@@ -6,15 +6,17 @@ interface Props {
 
 const StickyFooterCTA: React.FC<Props> = ({ onClick }) => {
   return (
-    <div className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 shadow-md sm:hidden z-50">
-      <div className="max-w-2xl mx-auto px-4 py-3 flex justify-between items-center">
-        <div className="text-sm font-medium text-gray-800">Get free quotes in 30 seconds</div>
+    <div className="fixed bottom-0 left-0 z-50 w-full border-t border-gray-200 bg-white shadow-md sm:hidden">
+      <div className="mx-auto flex max-w-2xl items-center justify-between px-4 py-3">
+        <div className="text-sm font-medium text-gray-800">
+          Get free quotes in 30 seconds
+        </div>
         <button
           onClick={() => {
             logEvent('cta_click', { source: 'mobile_sticky' });
             onClick();
           }}
-          className="bg-primary text-white font-semibold py-2 px-4 rounded-full text-sm"
+          className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white"
         >
           Get Started
         </button>

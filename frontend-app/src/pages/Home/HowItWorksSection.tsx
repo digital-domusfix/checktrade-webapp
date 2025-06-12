@@ -27,7 +27,7 @@ const steps = [
 const HowItWorksSection: React.FC<Props> = ({ onGetStartedClick }) => (
   <SectionWrapper id="how-it-works" title="How It Works" className="bg-base">
     <motion.div
-      className="grid gap-6 sm:grid-cols-3 pt-6"
+      className="grid gap-6 pt-6 sm:grid-cols-3"
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true }}
@@ -41,30 +41,30 @@ const HowItWorksSection: React.FC<Props> = ({ onGetStartedClick }) => (
       {steps.map(({ icon: Icon, title, description }, i) => (
         <motion.div
           key={i}
-          className="bg-white text-center p-6 rounded-xl shadow-md hover:shadow-xl transition"
+          className="rounded-xl bg-white p-6 text-center shadow-md transition hover:shadow-xl"
           variants={{
             hidden: { opacity: 0, y: 30 },
             visible: { opacity: 1, y: 0 },
           }}
         >
-          <div className="flex justify-center mb-4">
-            <Icon className="h-10 w-10 text-primary" />
+          <div className="mb-4 flex justify-center">
+            <Icon className="size-10 text-primary" />
           </div>
-          <h4 className="font-semibold text-xl text-gray-900 mb-1">{title}</h4>
-          <p className="text-gray-600 text-sm">{description}</p>
+          <h4 className="mb-1 text-xl font-semibold text-gray-900">{title}</h4>
+          <p className="text-sm text-gray-600">{description}</p>
         </motion.div>
       ))}
     </motion.div>
 
     {onGetStartedClick && (
-      <div className="text-center mt-10">
+      <div className="mt-10 text-center">
         <button
           onClick={onGetStartedClick}
-          className="bg-primary hover:bg-primary-hover text-white px-6 py-3 rounded-full font-semibold text-lg shadow-md"
+          className="rounded-full bg-primary px-6 py-3 text-lg font-semibold text-white shadow-md hover:bg-primary-hover"
         >
           Get Free Quotes
         </button>
-        <p className="text-sm text-gray-500 mt-2">It only takes 30 seconds</p>
+        <p className="mt-2 text-sm text-gray-500">It only takes 30 seconds</p>
       </div>
     )}
   </SectionWrapper>

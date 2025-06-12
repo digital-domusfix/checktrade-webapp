@@ -14,7 +14,7 @@ import { ModalProvider } from './components/ModalManager'; // ✅ ADD THIS
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <BrowserRouter>
-      <ModalProvider> 
+      <ModalProvider>
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route path="/" element={<Navigate to="/home" />} />
@@ -28,5 +28,5 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
         </Routes>
       </ModalProvider>
     </BrowserRouter>
-  </React.StrictMode>
+  </React.StrictMode>,
 );

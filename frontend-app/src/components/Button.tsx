@@ -18,5 +18,7 @@ export const Button: React.FC<ButtonProps> = ({
     ghost: 'text-primary hover:underline',
   };
 
-  return <button className={clsx(base, variants[variant], className)} {...props} />;
+  return (
+    <button className={clsx(base, variants[variant], className)} {...props} />
+  );
 };

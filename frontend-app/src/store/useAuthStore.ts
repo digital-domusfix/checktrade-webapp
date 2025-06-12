@@ -32,22 +32,22 @@ export const useAuthStore = create<AuthState>((set) => ({
   error: undefined,
   token: null,
 
-register: async (req) => {
-  try {
-    set({ loading: true });
-    const { data } = await registerUser({
-      fullName: req.fullName,
-      email: req.email,
-      password: req.password,
-    });
-    return data.userId; // 👈 Bubble this up
-  } catch (err: any) {
-    set({ error: err.message });
-    throw err; // 👈 Re-throw if caller needs to handle
-  } finally {
-    set({ loading: false });
-  }
-},
+  register: async (req) => {
+    try {
+      set({ loading: true });
+      const { data } = await registerUser({
+        fullName: req.fullName,
+        email: req.email,
+        password: req.password,
+      });
+      return data.userId; // 👈 Bubble this up
+    } catch (err: any) {
+      set({ error: err.message });
+      throw err; // 👈 Re-throw if caller needs to handle
+    } finally {
+      set({ loading: false });
+    }
+  },
 
   verify: async (req) => {
     try {

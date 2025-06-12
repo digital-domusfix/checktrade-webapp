@@ -21,9 +21,12 @@ export const OtpForm = ({ userId, onVerified }: Props) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 max-w-sm mx-auto">
+    <form onSubmit={handleSubmit} className="mx-auto max-w-sm space-y-4">
       <div className="space-y-1">
-        <label htmlFor="otp" className="block text-sm font-medium text-gray-700">
+        <label
+          htmlFor="otp"
+          className="block text-sm font-medium text-gray-700"
+        >
           Verification code
         </label>
         <input
@@ -33,7 +36,7 @@ export const OtpForm = ({ userId, onVerified }: Props) => {
           maxLength={6}
           value={otp}
           onChange={(e) => setOtp(e.target.value)}
-          className="w-full p-3 rounded-lg border text-center tracking-widest text-xl"
+          className="w-full rounded-lg border p-3 text-center text-xl tracking-widest"
           placeholder="Enter 6-digit code"
         />
       </div>

@@ -41,8 +41,8 @@ it('enables submit when form is valid and navigates to verification screen', asy
 
   await waitFor(() =>
     expect(navigateMock).toHaveBeenCalledWith(
-      '/verify-email?uid=user1&email=john%40example.com'
-    )
+      '/verify-email?uid=user1&email=john%40example.com',
+    ),
   );
 });
 
@@ -63,14 +63,16 @@ it('shows validation errors on blur when fields are invalid', async () => {
   });
   fireEvent.blur(screen.getByLabelText(/password/i));
   expect(
-    await screen.findByText(/password must be at least 6 characters/i)
+    await screen.findByText(/password must be at least 6 characters/i),
   ).toBeInTheDocument();
 
   expect(screen.getByRole('button', { name: /sign up/i })).toBeDisabled();
 });
 
 it('disables submit while submitting and navigates on success', async () => {
-  const registerPromise = new Promise<string>((res) => setTimeout(() => res('user1'), 10));
+  const registerPromise = new Promise<string>((res) =>
+    setTimeout(() => res('user1'), 10),
+  );
   registerMock.mockReturnValueOnce(registerPromise);
 
   render(<RegisterScreen />);
@@ -92,7 +94,7 @@ it('disables submit while submitting and navigates on success', async () => {
 
   await waitFor(() =>
     expect(navigateMock).toHaveBeenCalledWith(
-      '/verify-email?uid=user1&email=john%40example.com'
-    )
+      '/verify-email?uid=user1&email=john%40example.com',
+    ),
   );
 });
