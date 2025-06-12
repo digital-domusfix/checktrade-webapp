@@ -28,6 +28,12 @@ const Step3 = () => {
 
   const timingValid =
     timing !== '' && (timing !== 'date' || (date && date >= today));
+  const timingError =
+    !touched.timing || timingValid
+      ? ''
+      : timing === 'date' && date && date < today
+        ? 'Please select a future date'
+        : 'Please choose when you want the job done';
   const budgetValid =
     unsure ||
     (budget !== '' && !Number.isNaN(Number(budget)) && Number(budget) > 0);
@@ -94,9 +100,9 @@ const Step3 = () => {
             className="mt-2 w-full rounded border p-2 focus:border-primary"
           />
         )}
-        {touched.timing && !timingValid && (
+        {timingError && (
           <p id="schedule-error" className="text-sm text-red-500">
-            Please select a future date
+            {timingError}
           </p>
         )}
       </div>
@@ -141,6 +147,7 @@ const Step3 = () => {
         </Button>
         <Button
           type="submit"
+          aria-busy={nexting}
           disabled={!timingValid || !budgetValid || nexting}
         >
           {nexting && <Spinner className="mr-2" />}Next: Review & Post
