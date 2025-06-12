@@ -147,8 +147,11 @@ export default function BusinessTradePage() {
             />
           </div>
           <div className="space-y-1">
-            <label className="text-sm font-semibold">Trade Category *</label>
+            <label htmlFor="category" className="text-sm font-semibold">
+              Trade Category *
+            </label>
             <select
+              id="category"
               value={categoryId}
               onChange={(e) => {
                 setCategoryId(e.target.value);
@@ -278,8 +281,11 @@ export default function BusinessTradePage() {
             )}
           </div>
           <div className="space-y-1">
-            <label className="text-sm font-semibold">Travel Radius *</label>
+            <label htmlFor="radius" className="text-sm font-semibold">
+              Travel Radius *
+            </label>
             <select
+              id="radius"
               value={radius}
               onChange={(e) => setRadius(e.target.value)}
               onBlur={validate}
