@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './features/auth/LoginPage';
 import SignupPage from './features/auth/SignupPage';
 import EmailVerificationPage from './features/auth/EmailVerificationPage';
-import Dashboard from './features/dashboard/Dashboard';
+import ContractorDashboard from './features/dashboard/ContractorDashboard';
 import ProfileSetupPage from './features/onboarding/ProfileSetupPage';
 import BusinessTradePage from './features/onboarding/BusinessTradePage';
 import LegalCredentialsPage from './features/onboarding/LegalCredentialsPage';
@@ -31,7 +31,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
             <Route path="/home" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
-            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/dashboard" element={<ContractorDashboard />} />
             <Route path="/verify-email" element={<EmailVerificationPage />} />
             <Route path="/profile-setup" element={<ProfileSetupPage />} />
             <Route path="/business-profile" element={<BusinessTradePage />} />
