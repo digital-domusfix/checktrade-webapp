@@ -12,4 +12,18 @@ export interface ProfileSetupData {
 const updateProfile = (data: ProfileSetupData) =>
   http.post('/api/identity/profile', { userId: data.userId, ...data });
 
-export default { updateProfile };
+export interface BusinessProfileData {
+  userId: string;
+  businessName?: string;
+  tradeCategory: string;
+  subcategories: string[];
+  yearsExperience?: number;
+  city: string;
+  postalCode?: string;
+  travelRadius: number;
+}
+
+const completeOnboarding = (data: BusinessProfileData) =>
+  http.post('/api/identity/onboarding', data);
+
+export default { updateProfile, completeOnboarding };

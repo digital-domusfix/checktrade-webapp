@@ -9,7 +9,7 @@ export const RegisterScreen = () => {
     role: 'homeowner' | 'contractor',
   ) => {
     if (role === 'contractor') {
-      navigate('/profile-setup');
+      navigate('/business-profile');
     } else {
       navigate(`/verify-email?uid=${id}&email=${encodeURIComponent(email)}`);
     }
