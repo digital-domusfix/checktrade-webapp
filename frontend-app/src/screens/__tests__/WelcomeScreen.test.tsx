@@ -30,7 +30,10 @@ test('sets flag on mount and CTA navigates', async () => {
   await waitFor(() =>
     expect(localStorage.getItem('onboarding-complete')).toBe('true'),
   );
-  fireEvent.click(screen.getByRole('button', { name: /post your first job/i }));
+  const button = screen.getByRole('button', { name: /post your first job/i });
+  fireEvent.click(button);
+  expect(button).toBeDisabled();
+  expect(button.querySelector('svg.animate-spin')).toBeInTheDocument();
   expect(navigateMock).toHaveBeenCalledWith('/job/new');
 });
 
