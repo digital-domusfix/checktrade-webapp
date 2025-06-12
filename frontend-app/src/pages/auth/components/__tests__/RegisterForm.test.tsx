@@ -1,6 +1,8 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { vi } from 'vitest';
+import { MemoryRouter, Routes, Route } from 'react-router-dom';
+import { RegisterScreen } from '../../../../screens/RegisterScreen';
 import { RegisterForm } from '../RegisterForm';
 
 const registerMock = vi.fn().mockResolvedValue('user1');
@@ -62,12 +64,18 @@ it('shows validation errors on blur when fields are invalid', async () => {
   expect(screen.getByRole('button', { name: /sign up/i })).toBeDisabled();
 });
 
-it('disables submit while submitting and triggers success callback', async () => {
-  const onRegistered = vi.fn();
+it('navigates to verification screen on successful registration', async () => {
   const registerPromise = new Promise<string>((res) => setTimeout(() => res('user1'), 10));
   registerMock.mockReturnValueOnce(registerPromise);
 
-  render(<RegisterForm onRegistered={onRegistered} />);
+  render(
+    <MemoryRouter initialEntries={['/signup']}>
+      <Routes>
+        <Route path="/signup" element={<RegisterScreen />} />
+        <Route path="/verify-email" element={<div>Verification Page</div>} />
+      </Routes>
+    </MemoryRouter>
+  );
 
   fireEvent.change(screen.getByPlaceholderText(/full name/i), {
     target: { value: 'John Doe' },
@@ -84,8 +92,5 @@ it('disables submit while submitting and triggers success callback', async () =>
 
   expect(button).toBeDisabled();
 
-  await waitFor(() =>
-    expect(onRegistered).toHaveBeenCalledWith('user1', 'john@example.com')
-  );
-  expect(screen.getByText(/otp sent/i)).toBeInTheDocument();
+  await waitFor(() => expect(screen.getByText(/verification page/i)).toBeInTheDocument());
 });
