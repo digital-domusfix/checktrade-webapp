@@ -141,4 +141,58 @@ describe('API', () => {
     expect(user.otp).not.toBe(firstOtp);
     expect(user.verified).toBe(false);
   });
+
+  test('complete contractor onboarding', async () => {
+    const res = await request(app)
+      .post('/api/identity/register')
+      .send({
+        email: 'pro@example.com',
+        password: 'secret123',
+        role: 'contractor',
+      });
+    const userId = res.body.userId;
+
+    const onboardRes = await request(app)
+      .post('/api/identity/onboarding')
+      .send({
+        userId,
+        businessName: 'Plumb Co',
+        tradeCategory: 'plumbing',
+        subcategories: ['repair'],
+        yearsExperience: 5,
+        city: 'Halifax',
+        postalCode: 'B2T 1A1',
+        travelRadius: 10,
+      });
+
+    expect(onboardRes.status).toBe(200);
+    const user = users.find((u) => u.id === userId);
+    expect(user.tradeCategory).toBe('plumbing');
+    expect(user.subcategories).toEqual(['repair']);
+  });
+
+  test('onboarding rejects invalid postal code', async () => {
+    const res = await request(app)
+      .post('/api/identity/register')
+      .send({
+        email: 'badpc@example.com',
+        password: 'secret123',
+        role: 'contractor',
+      });
+    const userId = res.body.userId;
+
+    const onboardRes = await request(app)
+      .post('/api/identity/onboarding')
+      .send({
+        userId,
+        tradeCategory: 'plumbing',
+        subcategories: ['repair'],
+        city: 'Halifax',
+        postalCode: '123',
+        travelRadius: 5,
+      });
+
+    expect(onboardRes.status).toBe(400);
+    expect(onboardRes.body.error).toMatch(/postal/);
+  });
 });

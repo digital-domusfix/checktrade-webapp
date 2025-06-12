@@ -110,6 +110,45 @@ app.post('/api/identity/profile', (req, res) => {
   res.json({ success: true });
 });
 
+app.post('/api/identity/onboarding', (req, res) => {
+  const {
+    userId,
+    businessName,
+    tradeCategory,
+    subcategories,
+    yearsExperience,
+    city,
+    postalCode,
+    travelRadius,
+  } = req.body;
+  const user = users.find((u) => u.id === userId);
+  if (!user) return res.status(404).json({ error: 'User not found' });
+
+  if (!tradeCategory || !Array.isArray(subcategories) || subcategories.length === 0) {
+    return res.status(400).json({ error: 'tradeCategory and subcategories required' });
+  }
+  if (!city || !travelRadius) {
+    return res.status(400).json({ error: 'city and travelRadius required' });
+  }
+  if (postalCode && !/^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/.test(postalCode)) {
+    return res.status(400).json({ error: 'Invalid postal code' });
+  }
+  const years = Number(yearsExperience);
+  if (yearsExperience !== undefined && (Number.isNaN(years) || years < 0 || years > 50)) {
+    return res.status(400).json({ error: 'Invalid years of experience' });
+  }
+
+  user.businessName = businessName;
+  user.tradeCategory = tradeCategory;
+  user.subcategories = subcategories;
+  user.yearsExperience = yearsExperience === undefined ? undefined : years;
+  user.city = city;
+  user.postalCode = postalCode;
+  user.travelRadius = Number(travelRadius);
+
+  res.json({ success: true });
+});
+
 if (process.env.NODE_ENV !== 'test') {
   const port = process.env.PORT || 3000;
   app.listen(port, () => {
