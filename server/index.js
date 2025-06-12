@@ -12,10 +12,12 @@ const users = [];
 const jobs = [];
 
 app.post('/api/identity/register', (req, res) => {
-  const { fullName, email, password } = req.body;
+  const { fullName = '', email, password, role } = req.body;
 
-  if (!fullName || !email || !password) {
-    return res.status(400).json({ error: 'fullName, email, and password required' });
+  if (!email || !password || !role) {
+    return res
+      .status(400)
+      .json({ error: 'email, password, and role required' });
   }
 
   const existingUser = users.find((u) => u.email === email);
@@ -28,6 +30,7 @@ app.post('/api/identity/register', (req, res) => {
     fullName,
     email,
     password,
+    role,
     otp: generateOtp(),
     verified: false,
   };

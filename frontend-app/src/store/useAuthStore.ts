@@ -39,6 +39,7 @@ export const useAuthStore = create<AuthState>((set) => ({
         fullName: req.fullName,
         email: req.email,
         password: req.password,
+        role: req.role,
       });
       return data.userId; // 👈 Bubble this up
     } catch (err: any) {

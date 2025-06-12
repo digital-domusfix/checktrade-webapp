@@ -3,8 +3,16 @@ import { useNavigate } from 'react-router-dom';
 export const RegisterScreen = () => {
   const navigate = useNavigate();
 
-  const handleRegisterSuccess = (id: string, email: string) => {
-    navigate(`/verify-email?uid=${id}&email=${encodeURIComponent(email)}`);
+  const handleRegisterSuccess = (
+    id: string,
+    email: string,
+    role: 'homeowner' | 'contractor',
+  ) => {
+    if (role === 'contractor') {
+      navigate('/profile-setup');
+    } else {
+      navigate(`/verify-email?uid=${id}&email=${encodeURIComponent(email)}`);
+    }
   };
 
   return (
