@@ -9,7 +9,7 @@ export const RegisterScreen = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-[400px]">
         <h1 className="text-2xl font-bold text-center mb-6">Join CheckTrade</h1>
         <RegisterForm onRegistered={handleRegisterSuccess} />
       </div>
