@@ -33,6 +33,10 @@ beforeAll(() => {
   (global as any).scrollTo = vi.fn();
 });
 
+beforeEach(() => {
+  localStorage.clear();
+});
+
 test('requires valid postal code', async () => {
   render(<BusinessTradePage />);
   await screen.findByText(/trade category/i);
