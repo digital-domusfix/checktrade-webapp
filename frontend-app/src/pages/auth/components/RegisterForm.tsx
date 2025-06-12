@@ -60,16 +60,20 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onRegistered }) => {
   return submitted ? (
     <div className="text-center text-primary">OTP sent! Please verify.</div>
   ) : (
-    <form onSubmit={handleSubmit} className="space-y-4 max-w-md mx-auto">
+    <form onSubmit={handleSubmit} className="space-y-6 max-w-[400px] mx-auto">
       {error && (
-        <div className="bg-red-100 text-red-700 p-2 rounded text-sm" role="alert">
+        <div
+          className="bg-red-100 text-red-700 p-2 rounded text-sm transition-opacity"
+          role="alert"
+        >
           {error}
         </div>
       )}
-      <div className="space-y-1">
-        <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">
+      <div className="space-y-4">
+        <div className="space-y-1">
+          <label htmlFor="fullName" className="block text-sm font-semibold text-gray-700">
           Full name
-        </label>
+          </label>
         <input
           id="fullName"
           type="text"
@@ -77,18 +81,18 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onRegistered }) => {
           value={fullName}
           onChange={(e) => setFullName(e.target.value)}
           onBlur={() => handleBlur('fullName')}
-          className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary ${
-            touched.fullName && !fullName.trim() ? 'border-red-500' : ''
+          className={`w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary ${
+            touched.fullName && !fullName.trim() ? 'border-error text-error' : 'border-brand-gray'
           }`}
         />
         {touched.fullName && !fullName.trim() && (
-          <p className="text-red-500 text-sm mt-1">Full name is required</p>
+          <p className="text-error text-sm italic mt-1 transition-opacity">Full name is required</p>
         )}
-      </div>
-      <div className="space-y-1">
-        <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+        </div>
+        <div className="space-y-1">
+          <label htmlFor="email" className="block text-sm font-semibold text-gray-700">
           Email address
-        </label>
+          </label>
         <input
           id="email"
           type="email"
@@ -96,18 +100,18 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onRegistered }) => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           onBlur={() => handleBlur('email')}
-          className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary ${
-            touched.email && !isEmailValid(email) ? 'border-red-500' : ''
+          className={`w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary ${
+            touched.email && !isEmailValid(email) ? 'border-error text-error' : 'border-brand-gray'
           }`}
         />
         {touched.email && !isEmailValid(email) && (
-          <p className="text-red-500 text-sm mt-1">Enter a valid email</p>
+          <p className="text-error text-sm italic mt-1 transition-opacity">Enter a valid email</p>
         )}
-      </div>
-      <div className="relative space-y-1">
-        <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+        </div>
+        <div className="relative space-y-1">
+          <label htmlFor="password" className="block text-sm font-semibold text-gray-700">
           Password
-        </label>
+          </label>
         <input
           id="password"
           type={showPassword ? 'text' : 'password'}
@@ -115,8 +119,8 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onRegistered }) => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           onBlur={() => handleBlur('password')}
-          className={`w-full p-3 border rounded-lg pr-20 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary ${
-            touched.password && !isPasswordValid(password) ? 'border-red-500' : ''
+          className={`w-full p-3 border rounded-md pr-20 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary ${
+            touched.password && !isPasswordValid(password) ? 'border-error text-error' : 'border-brand-gray'
           }`}
         />
         <button
@@ -127,10 +131,12 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onRegistered }) => {
           {showPassword ? 'Hide' : 'Show'}
         </button>
         {touched.password && !isPasswordValid(password) && (
-          <p className="text-red-500 text-sm mt-1">
+          <p className="text-error text-sm italic mt-1 transition-opacity">
             Password must be at least 6 characters and include a number
           </p>
         )}
+        <p className="text-xs text-gray-500">8+ characters, at least one number</p>
+        </div>
       </div>
       <Button type="submit" className="w-full flex items-center justify-center" disabled={submitting || !isFormValid}>
         {submitting && <Spinner className="text-white mr-2" />}
