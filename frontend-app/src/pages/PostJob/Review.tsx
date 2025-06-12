@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '../../components/Button';
 import { Spinner } from '../../components/Spinner';
-import Toast from '../../components/Toast';
 import jobService, {
   JobCategory,
   JobSubcategory,
@@ -32,7 +31,6 @@ const Review = () => {
   const [fields, setFields] = useState<Field[]>([]);
   const [posting, setPosting] = useState(false);
   const [error, setError] = useState('');
-  const [toastMessage, setToastMessage] = useState('');
 
   useEffect(() => {
     if (!state) return;
@@ -89,10 +87,13 @@ const Review = () => {
       req.budget = { min: state.budget, max: state.budget };
     }
     try {
-      await jobService.createJob(req as CreateJobRequest);
+      const res = await jobService.createJob(req as CreateJobRequest);
+      const id = res.data?.id as string | undefined;
       localStorage.setItem('hasPostedJob', 'true');
-      setToastMessage('Job posted!');
-      setTimeout(() => navigate('/job/new'), 800);
+      if (id) {
+        localStorage.setItem('lastJobId', id);
+      }
+      navigate('/job/success', { state: { jobId: id } });
     } catch {
       setError('Failed to post job');
       setPosting(false);
@@ -271,9 +272,6 @@ const Review = () => {
           {posting && <Spinner className="mr-2" />}Post Job
         </Button>
       </div>
-      {toastMessage && (
-        <Toast message={toastMessage} onDismiss={() => setToastMessage('')} />
-      )}
     </div>
   );
 };

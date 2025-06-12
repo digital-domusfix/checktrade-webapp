@@ -11,6 +11,7 @@ import './index.css';
 import HomePage from './pages/Home/HomePage';
 import Layout from './pages/Layout/Layout';
 import NewJobPage from './pages/Job/NewJobPage';
+import JobSuccessPage from './pages/Job/JobSuccessPage';
 import PostJobStep1 from './pages/PostJob/Step1';
 import PostJobStep2 from './pages/PostJob/Step2';
 import PostJobStep3 from './pages/PostJob/Step3';
@@ -32,6 +33,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
             <Route path="/profile-setup" element={<ProfileSetupPage />} />
             <Route path="/welcome" element={<WelcomePage />} />
             <Route path="/job/new" element={<NewJobPage />} />
+            <Route path="/job/success" element={<JobSuccessPage />} />
             <Route path="/post-job" element={<PostJobStep1 />} />
             <Route path="/post-job/details" element={<PostJobStep2 />} />
             <Route path="/post-job/schedule" element={<PostJobStep3 />} />
