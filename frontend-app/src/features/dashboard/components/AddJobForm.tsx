@@ -26,6 +26,7 @@ export const AddJobForm = ({ property, onCreated }: Props) => {
         description,
       };
       await jobService.createJob(req as CreateJobRequest);
+      localStorage.setItem('hasPostedJob', 'true');
       onCreated?.();
     } finally {
       setSubmitting(false);
