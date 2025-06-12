@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { vi } from 'vitest';
 import WelcomeScreen from '../WelcomeScreen';
@@ -36,23 +36,33 @@ test('handshake icon is hidden from assistive tech and sr message exists', () =>
   ).toHaveClass('sr-only');
 });
 
-test('sets flag on mount and CTA navigates', async () => {
+test('does not set flag on mount', () => {
   render(<WelcomeScreen />);
-  await waitFor(() =>
-    expect(localStorage.getItem('onboarding-complete')).toBe('true'),
-  );
+  expect(localStorage.getItem('onboarding-complete')).toBe(null);
+});
+
+test('CTA sets flag and navigates', () => {
+  render(<WelcomeScreen />);
   const button = screen.getByRole('button', { name: /post your first job/i });
   fireEvent.click(button);
   expect(button).toBeDisabled();
   expect(button.querySelector('svg.animate-spin')).toBeInTheDocument();
+  expect(localStorage.getItem('onboarding-complete')).toBe('true');
   expect(navigateMock).toHaveBeenCalledWith('/job/new');
 });
 
-test('leaving and returning redirects to dashboard', async () => {
+test('explore link sets flag and navigates', () => {
+  render(<WelcomeScreen />);
+  const link = screen.getByRole('button', { name: /explore dashboard/i });
+  fireEvent.click(link);
+  expect(localStorage.getItem('onboarding-complete')).toBe('true');
+  expect(navigateMock).toHaveBeenCalledWith('/dashboard', { replace: true });
+});
+
+test('leaving and returning redirects to dashboard', () => {
   const { unmount } = render(<WelcomeScreen />);
-  await waitFor(() =>
-    expect(localStorage.getItem('onboarding-complete')).toBe('true'),
-  );
+  const link = screen.getByRole('button', { name: /explore dashboard/i });
+  fireEvent.click(link);
   navigateMock.mockClear();
   unmount();
 

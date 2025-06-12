@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Handshake } from 'lucide-react';
 import { Button } from '../components/Button';
@@ -11,12 +11,6 @@ export default function WelcomeScreen() {
   const navigate = useNavigate();
   const [pulse, setPulse] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  // Immediately mark onboarding as complete once the user lands here so
-  // subsequent visits can bypass this screen.
-  useEffect(() => {
-    localStorage.setItem('onboarding-complete', 'true');
-  }, []);
 
   useEffect(() => {
     if (
@@ -34,10 +28,19 @@ export default function WelcomeScreen() {
 
   const firstName = profile?.fullName?.split(' ')[0] || 'there';
 
+  const markComplete = () => {
+    localStorage.setItem('onboarding-complete', 'true');
+  };
+
   const handlePostJob = () => {
     setLoading(true);
-    localStorage.setItem('onboarding-complete', 'true');
+    markComplete();
     navigate('/job/new');
+  };
+
+  const handleExplore = () => {
+    markComplete();
+    navigate('/dashboard', { replace: true });
   };
 
   const container = {
@@ -55,10 +58,13 @@ export default function WelcomeScreen() {
         variants={container}
         initial="hidden"
         animate="show"
-        className="w-full max-w-md space-y-6 text-center"
+        className="w-full max-w-xl space-y-6 text-center"
       >
         <motion.div variants={item}>
-          <Handshake className="mx-auto size-20 text-primary" aria-hidden="true" />
+          <Handshake
+            className="mx-auto size-20 text-primary"
+            aria-hidden="true"
+          />
         </motion.div>
         <p className="sr-only" aria-live="polite">
           {`Welcome, ${firstName}! You're ready to post your first job.`}
@@ -69,7 +75,7 @@ export default function WelcomeScreen() {
         <motion.p variants={item} className="text-lg">
           We&apos;re glad you&apos;re here!
         </motion.p>
-        <motion.div variants={item}>
+        <motion.div variants={item} className="space-y-4">
           <Button
             onClick={handlePostJob}
             disabled={loading}
@@ -82,6 +88,15 @@ export default function WelcomeScreen() {
             {loading && <Spinner className="mr-2 text-white" />}
             Post Your First Job
           </Button>
+          <div>
+            <button
+              onClick={handleExplore}
+              className="text-primary underline"
+              type="button"
+            >
+              Explore Dashboard
+            </button>
+          </div>
         </motion.div>
       </motion.div>
     </div>
