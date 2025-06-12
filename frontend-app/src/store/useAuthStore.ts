@@ -1,16 +1,19 @@
-import { MyProfileDto } from '../types/common';
 import { create } from 'zustand';
 import {
-  RegisterRequest,
+  RegisterCustomerRequest,
+  RegisterContractorRequest,
   VerifyOtpRequest,
   ResendOtpRequest,
   LoginRequest,
-  registerUser,
+  registerCustomer as registerCustomerApi,
+  registerContractor as registerContractorApi,
   verifyOtp,
   resendOtp,
   getMyProfile,
   login as loginRequest,
 } from '../api/identityApi';
+import { MyProfileDto } from '../types/common';
+import { AppConfig } from '../config';
 
 type AuthState = {
   profile: MyProfileDto | null;
@@ -18,7 +21,9 @@ type AuthState = {
   error?: string;
   token: string | null;
 
-  register: (req: RegisterRequest) => Promise<string>;
+  registerCustomer: (req: Omit<RegisterCustomerRequest, 'tenantId'>) => Promise<string>;
+  registerContractor: (req: Omit<RegisterContractorRequest, 'tenantId'>) => Promise<string>;
+
   verify: (req: VerifyOtpRequest) => Promise<void>;
   resend: (req: ResendOtpRequest) => Promise<void>;
   login: (req: LoginRequest) => Promise<void>;
@@ -32,19 +37,33 @@ export const useAuthStore = create<AuthState>((set) => ({
   error: undefined,
   token: null,
 
-  register: async (req) => {
+  registerCustomer: async (req) => {
     try {
-      set({ loading: true });
-      const { data } = await registerUser({
-        fullName: req.fullName,
-        email: req.email,
-        password: req.password,
-        role: req.role,
+      set({ loading: true, error: undefined });
+      const { data } = await registerCustomerApi({
+        ...req,
+        tenantId: AppConfig.tenantId,
       });
-      return data.userId; // 👈 Bubble this up
+      return data.userId;
     } catch (err: any) {
       set({ error: err.message });
-      throw err; // 👈 Re-throw if caller needs to handle
+      throw err;
+    } finally {
+      set({ loading: false });
+    }
+  },
+
+  registerContractor: async (req) => {
+    try {
+      set({ loading: true, error: undefined });
+      const { data } = await registerContractorApi({
+        ...req,
+        tenantId: AppConfig.tenantId,
+      });
+      return data.userId;
+    } catch (err: any) {
+      set({ error: err.message });
+      throw err;
     } finally {
       set({ loading: false });
     }
@@ -52,7 +71,7 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   verify: async (req) => {
     try {
-      set({ loading: true });
+      set({ loading: true, error: undefined });
       await verifyOtp(req);
       await useAuthStore.getState().fetchProfile();
     } catch (err: any) {
@@ -64,7 +83,7 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   resend: async (req) => {
     try {
-      set({ loading: true });
+      set({ loading: true, error: undefined });
       await resendOtp(req);
     } catch (err: any) {
       set({ error: err.message });
@@ -75,9 +94,8 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   login: async (req) => {
     try {
-      set({ loading: true });
+      set({ loading: true, error: undefined });
       const { data } = await loginRequest(req);
-      // assume token returned as { token: string }
       if (data && (data as any).token) {
         set({ token: (data as any).token });
       }
@@ -100,7 +118,6 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
 
   logout: () => {
-    // Clear token/cookie if needed
-    set({ profile: null });
+    set({ profile: null, token: null });
   },
 }));

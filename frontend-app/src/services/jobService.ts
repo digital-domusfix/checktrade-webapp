@@ -42,6 +42,7 @@ export interface JobCategoryId {
 export interface JobCategory {
   id: JobCategoryId;
   name: string;
+  code: string               
 }
 
 export interface JobCategories {
@@ -50,6 +51,7 @@ export interface JobCategories {
 export interface JobSubcategory {
   id: string;
   name: string;
+  code: string;
   categoryId?: string;
 }
 
