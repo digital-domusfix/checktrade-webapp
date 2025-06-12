@@ -1,15 +1,24 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import jobService, { JobCategory } from '../../services/jobService';
 import { Button } from '../../components/Button';
 import { Spinner } from '../../components/Spinner';
+import ConfirmDialog from '../../components/ConfirmDialog';
 
 const Step1 = () => {
+  const location = useLocation() as {
+    state?: { categoryId?: string; title?: string };
+  };
+
   const [categories, setCategories] = useState<JobCategory[]>([]);
-  const [categoryId, setCategoryId] = useState('');
-  const [title, setTitle] = useState('');
+  const [categoryId, setCategoryId] = useState(
+    location.state?.categoryId || '',
+  );
+  const [title, setTitle] = useState(location.state?.title || '');
   const [touched, setTouched] = useState({ category: false, title: false });
   const [submitting, setSubmitting] = useState(false);
+  const [showDiscard, setShowDiscard] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,8 +40,14 @@ const Step1 = () => {
 
   const handleCancel = () => {
     if (categoryId || title) {
-      if (!window.confirm('Discard this job post?')) return;
+      setShowDiscard(true);
+      return;
     }
+    navigate(-1);
+  };
+
+  const discard = () => {
+    setShowDiscard(false);
     navigate(-1);
   };
 
@@ -44,25 +59,43 @@ const Step1 = () => {
       <p className="text-sm text-gray-600">Step 1 of 3 – Basic Info</p>
 
       <div className="space-y-1">
-        <label htmlFor="category" className="text-sm font-medium">
-          Service Category
-        </label>
-        <select
-          id="category"
-          value={categoryId}
-          onChange={(e) => setCategoryId(e.target.value)}
-          onBlur={() => setTouched((t) => ({ ...t, category: true }))}
-          className={`w-full rounded border p-2 ${
-            touched.category && !categoryId ? 'border-red-500' : ''
-          }`}
+        <p className="text-sm font-medium">Service Category</p>
+        <div
+          className="grid grid-cols-2 gap-3 sm:grid-cols-3"
+          role="radiogroup"
         >
-          <option value="">Select a category…</option>
           {categories.map((c) => (
-            <option key={c.id.value} value={c.id.value}>
+            <motion.button
+              key={c.id.value}
+              type="button"
+              role="radio"
+              aria-checked={categoryId === c.id.value}
+              whileTap={{ scale: 0.97 }}
+              className={`flex flex-col items-center rounded border p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary ${
+                categoryId === c.id.value
+                  ? 'border-primary bg-primary/10'
+                  : 'border-gray-300 hover:bg-gray-50'
+              }`}
+              onClick={() => {
+                setCategoryId(c.id.value);
+                setTouched((t) => ({ ...t, category: true }));
+              }}
+            >
+              <span className="sr-only">{c.name}</span>
+              <svg
+                className="mb-1 size-6 text-primary"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path d="M12 2 2 7l10 5 10-5-10-5Z" />
+                <path d="m2 17 10 5 10-5" />
+                <path d="m2 12 10 5 10-5" />
+              </svg>
               {c.name}
-            </option>
+            </motion.button>
           ))}
-        </select>
+        </div>
         {touched.category && !categoryId && (
           <p className="text-sm text-red-500">Please select a category</p>
         )}
@@ -100,6 +133,12 @@ const Step1 = () => {
           {submitting ? <Spinner /> : 'Next: Details'}
         </Button>
       </div>
+      <ConfirmDialog
+        open={showDiscard}
+        message="Discard this job post? Your information will be lost."
+        onCancel={() => setShowDiscard(false)}
+        onConfirm={discard}
+      />
     </form>
   );
 };
