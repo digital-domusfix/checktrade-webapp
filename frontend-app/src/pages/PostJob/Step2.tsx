@@ -11,6 +11,8 @@ interface Field {
   type: 'text' | 'select' | 'radio' | 'checkbox' | 'date' | 'number';
   required?: boolean;
   options?: string[];
+  min?: number;
+  max?: number;
 }
 
 const formConfigs: Record<string, Field[]> = {
@@ -50,13 +52,14 @@ const Step2 = () => {
   const [subcategories, setSubcategories] = useState<JobSubcategory[]>([]);
   const [subcategoryId, setSubcategoryId] = useState('');
   const [fields, setFields] = useState<Field[]>([]);
-  const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [answers, setAnswers] = useState<Record<string, unknown>>({});
   const [description, setDescription] = useState('');
   const [descTouched, setDescTouched] = useState(false);
   const [imgFiles, setImgFiles] = useState<File[]>([]);
   const [videoFiles, setVideoFiles] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [nexting, setNexting] = useState(false);
 
   useEffect(() => {
     if (!state?.categoryId) return;
@@ -77,7 +80,22 @@ const Step2 = () => {
       .catch(() => setFields([]));
   }, [subcategoryId]);
 
-  const handleFile = (files: FileList | null, type: 'image' | 'video') => {
+  const checkVideoDuration = (file: File) =>
+    new Promise<boolean>((resolve) => {
+      const url = URL.createObjectURL(file);
+      const video = document.createElement('video');
+      video.preload = 'metadata';
+      video.onloadedmetadata = () => {
+        URL.revokeObjectURL(url);
+        resolve(video.duration <= 60);
+      };
+      video.src = url;
+    });
+
+  const handleFile = async (
+    files: FileList | null,
+    type: 'image' | 'video',
+  ) => {
     if (!files) return;
     const max = type === 'image' ? 5 : 2;
     const allowedTypes =
@@ -95,6 +113,13 @@ const Step2 = () => {
       if (f.size > maxSize) {
         setUploadError('File too large');
         return;
+      }
+      if (type === 'video') {
+        const ok = await checkVideoDuration(f);
+        if (!ok) {
+          setUploadError('Video too long');
+          return;
+        }
       }
     }
     setUploadError(null);
@@ -122,7 +147,19 @@ const Step2 = () => {
 
   const fieldsValid = fields.every((f) => {
     if (!f.required) return true;
-    return answers[f.id] && answers[f.id].toString().trim() !== '';
+    const val = answers[f.id];
+    if (f.type === 'checkbox') {
+      return Array.isArray(val) && val.length > 0;
+    }
+    if (f.type === 'number') {
+      if (val === undefined || val === '') return false;
+      const num = Number(val);
+      if (Number.isNaN(num)) return false;
+      if (f.min !== undefined && num < f.min) return false;
+      if (f.max !== undefined && num > f.max) return false;
+      return true;
+    }
+    return val !== undefined && val.toString().trim() !== '';
   });
 
   const canSubmit =
@@ -139,7 +176,11 @@ const Step2 = () => {
       {/* Subcategory Selection */}
       <div className="space-y-1">
         <p className="text-sm font-medium">Subcategory</p>
-        <div className="grid grid-cols-2 gap-3" role="radiogroup">
+        <div
+          className="grid grid-cols-2 gap-3"
+          role="radiogroup"
+          aria-describedby="subcategory-error"
+        >
           {subcategories.map((sub) => (
             <motion.button
               key={sub.id}
@@ -159,7 +200,9 @@ const Step2 = () => {
           ))}
         </div>
         {!subcategoryId && (
-          <p className="text-sm text-red-500">Please choose a subcategory</p>
+          <p id="subcategory-error" className="text-sm text-red-500">
+            Please choose a subcategory
+          </p>
         )}
       </div>
 
@@ -197,6 +240,8 @@ const Step2 = () => {
                   id={f.id}
                   type="number"
                   value={answers[f.id] || ''}
+                  min={f.min}
+                  max={f.max}
                   onChange={(e) =>
                     setAnswers({ ...answers, [f.id]: e.target.value })
                   }
@@ -261,6 +306,39 @@ const Step2 = () => {
                   ))}
                 </div>
               )}
+              {f.type === 'checkbox' && (
+                <div className="flex flex-wrap gap-4">
+                  {f.options?.map((o) => {
+                    const arr = Array.isArray(answers[f.id])
+                      ? (answers[f.id] as string[])
+                      : [];
+                    const checked = arr.includes(o);
+                    return (
+                      <label
+                        key={o}
+                        className="flex items-center gap-1 text-sm"
+                      >
+                        <input
+                          type="checkbox"
+                          name={`${f.id}-${o}`}
+                          value={o}
+                          checked={checked}
+                          onChange={(e) => {
+                            const prev = Array.isArray(answers[f.id])
+                              ? (answers[f.id] as string[])
+                              : [];
+                            const newVal = e.target.checked
+                              ? [...prev, o]
+                              : prev.filter((v) => v !== o);
+                            setAnswers({ ...answers, [f.id]: newVal });
+                          }}
+                        />
+                        {o}
+                      </label>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           ))
         )}
@@ -278,6 +356,7 @@ const Step2 = () => {
           onBlur={() => setDescTouched(true)}
           maxLength={1000}
           placeholder="Provide any extra details contractors should know…"
+          aria-describedby="description-error"
           className={`w-full rounded border p-2 focus:border-primary ${
             descTouched && !descriptionValid
               ? 'border-red-500'
@@ -287,7 +366,9 @@ const Step2 = () => {
         />
         <div className="flex items-center justify-between text-sm">
           {descTouched && !descriptionValid && (
-            <p className="text-red-500">Minimum 20 characters</p>
+            <p id="description-error" className="text-red-500">
+              Minimum 20 characters
+            </p>
           )}
           <span className="ml-auto text-gray-400">
             {description.length}/1000
@@ -325,7 +406,7 @@ const Step2 = () => {
         {imgFiles.length > 0 && (
           <ul className="grid grid-cols-3 gap-2">
             {imgFiles.map((f, i) => (
-              <li key={i} className="relative">
+              <li key={i} className="relative text-xs">
                 <img
                   src={URL.createObjectURL(f)}
                   alt="preview"
@@ -338,6 +419,9 @@ const Step2 = () => {
                 >
                   ✕
                 </button>
+                <p className="truncate pt-1">
+                  {f.name} ({(f.size / 1024 / 1024).toFixed(1)} MB)
+                </p>
               </li>
             ))}
           </ul>
@@ -345,7 +429,7 @@ const Step2 = () => {
         {videoFiles.length > 0 && (
           <ul className="space-y-2">
             {videoFiles.map((f, i) => (
-              <li key={i} className="relative">
+              <li key={i} className="relative text-xs">
                 <video
                   className="h-32 w-full rounded"
                   src={URL.createObjectURL(f)}
@@ -358,6 +442,9 @@ const Step2 = () => {
                 >
                   ✕
                 </button>
+                <p className="truncate pt-1">
+                  {f.name} ({(f.size / 1024 / 1024).toFixed(1)} MB)
+                </p>
               </li>
             ))}
           </ul>
@@ -374,8 +461,9 @@ const Step2 = () => {
         </Button>
         <Button
           type="button"
-          disabled={!canSubmit}
-          onClick={() =>
+          disabled={!canSubmit || nexting}
+          onClick={() => {
+            setNexting(true);
             navigate('/post-job/schedule', {
               state: {
                 ...state,
@@ -385,10 +473,10 @@ const Step2 = () => {
                 imgFiles,
                 videoFiles,
               },
-            })
-          }
+            });
+          }}
         >
-          Next: Schedule & Budget
+          {nexting && <Spinner className="mr-2" />}Next: Schedule & Budget
         </Button>
       </div>
     </form>
