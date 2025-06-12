@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '../../components/Button';
 import { Spinner } from '../../components/Spinner';
+import Toast from '../../components/Toast';
 import profileService from '../../services/profileService';
 import { useAuthStore } from '../../store/useAuthStore';
 
@@ -34,6 +35,7 @@ export default function ProfileSetupPage() {
   const cityRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const userId = useAuthStore((s) => s.profile?.userId);
+  const [toastMessage, setToastMessage] = useState('');
 
   const phoneDigits = phone.replace(/\D/g, '').slice(0, 10);
   const isPhoneValid = phoneDigits.length === 10;
@@ -109,7 +111,10 @@ export default function ProfileSetupPage() {
         lastName: lastNameRef,
         phone: phoneRef,
       };
-      map[first]?.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      map[first]?.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
     }
   };
 
@@ -123,7 +128,10 @@ export default function ProfileSetupPage() {
         city: cityRef,
         photo: fileRef,
       };
-      map[first]?.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      map[first]?.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
       return;
     }
     setSubmitting(true);
@@ -137,8 +145,10 @@ export default function ProfileSetupPage() {
         postalCode,
       });
       navigate('/dashboard');
-    } catch {
-      setErrors({ finish: 'Could not save profile, try again' });
+    } catch (err: any) {
+      const message = err?.message || 'Could not save profile, try again';
+      setErrors({ finish: message });
+      setToastMessage(message);
     } finally {
       setSubmitting(false);
     }
@@ -360,6 +370,9 @@ export default function ProfileSetupPage() {
           )}
         </AnimatePresence>
       </div>
+      {toastMessage && (
+        <Toast message={toastMessage} onDismiss={() => setToastMessage('')} />
+      )}
     </div>
   );
 }
