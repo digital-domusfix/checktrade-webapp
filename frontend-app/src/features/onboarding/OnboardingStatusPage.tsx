@@ -10,7 +10,8 @@ export default function OnboardingStatusPage() {
   const { state } = useLocation() as { state?: State };
   const profile = useAuthStore((s) => s.profile);
 
-  const status = state?.status ||
+  const status =
+    state?.status ||
     (localStorage.getItem(STATUS_KEY) as 'approved' | 'pending' | null) ||
     'pending';
 

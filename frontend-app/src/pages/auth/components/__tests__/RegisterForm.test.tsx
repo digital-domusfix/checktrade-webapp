@@ -75,7 +75,10 @@ it('applies ARIA attributes to invalid fields', async () => {
   const roleError = await screen.findByText(/please select a role/i);
   const homeownerInput = screen.getByLabelText(/homeowner/i);
   expect(homeownerInput).toHaveAttribute('aria-invalid', 'true');
-  expect(homeownerInput).toHaveAttribute('aria-describedby', 'register-role-error');
+  expect(homeownerInput).toHaveAttribute(
+    'aria-describedby',
+    'register-role-error',
+  );
   expect(roleError).toHaveAttribute('id', 'register-role-error');
 
   fireEvent.change(screen.getByLabelText(/email address/i), {

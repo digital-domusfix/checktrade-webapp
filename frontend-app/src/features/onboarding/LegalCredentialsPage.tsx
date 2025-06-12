@@ -221,7 +221,7 @@ export default function LegalCredentialsPage() {
           {errors.agree && (
             <p className="text-sm italic text-error">{errors.agree}</p>
           )}
-          <div className="flex justify-between pt-2 gap-2">
+          <div className="flex justify-between gap-2 pt-2">
             <Button
               variant="secondary"
               onClick={() => navigate('/business-profile')}
@@ -232,7 +232,7 @@ export default function LegalCredentialsPage() {
             <Button
               onClick={submit}
               disabled={!canSubmit || submitting}
-              className="flex items-center justify-center w-1/2"
+              className="flex w-1/2 items-center justify-center"
             >
               {submitting && <Spinner className="mr-2 text-white" />}
               {submitting ? 'Submitting…' : 'Submit for Approval'}

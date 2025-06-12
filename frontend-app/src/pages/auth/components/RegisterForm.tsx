@@ -33,9 +33,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onRegistered }) => {
   const isPasswordValid = (val: string) => val.length >= 8 && /\d/.test(val);
 
   const isFormValid =
-    isEmailValid(email) &&
-    isPasswordValid(password) &&
-    !!role;
+    isEmailValid(email) && isPasswordValid(password) && !!role;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

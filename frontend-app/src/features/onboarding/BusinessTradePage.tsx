@@ -4,12 +4,22 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '../../components/Button';
 import { Spinner } from '../../components/Spinner';
 import Toast from '../../components/Toast';
-import jobService, { JobCategory, JobSubcategory } from '../../services/jobService';
+import jobService, {
+  JobCategory,
+  JobSubcategory,
+} from '../../services/jobService';
 import profileService from '../../services/profileService';
 import { useAuthStore } from '../../store/useAuthStore';
 
-const cities = ['Halifax','Dartmouth','Sydney','Truro','New Glasgow','Yarmouth'];
-const radiusOptions = [5,10,15,25];
+const cities = [
+  'Halifax',
+  'Dartmouth',
+  'Sydney',
+  'Truro',
+  'New Glasgow',
+  'Yarmouth',
+];
+const radiusOptions = [5, 10, 15, 25];
 const LOCAL_KEY = 'business-trade-form';
 
 export default function BusinessTradePage() {
@@ -25,7 +35,7 @@ export default function BusinessTradePage() {
   const [city, setCity] = useState('');
   const [postalCode, setPostalCode] = useState('');
   const [radius, setRadius] = useState('');
-  const [errors, setErrors] = useState<Record<string,string>>({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [toast, setToast] = useState('');
 
@@ -58,7 +68,15 @@ export default function BusinessTradePage() {
       radius,
     };
     localStorage.setItem(LOCAL_KEY, JSON.stringify(data));
-  }, [businessName, categoryId, selectedSubs, yearsExp, city, postalCode, radius]);
+  }, [
+    businessName,
+    categoryId,
+    selectedSubs,
+    yearsExp,
+    city,
+    postalCode,
+    radius,
+  ]);
 
   useEffect(() => {
     jobService
@@ -68,7 +86,10 @@ export default function BusinessTradePage() {
   }, []);
 
   useEffect(() => {
-    if (!categoryId) { setSubcategories([]); return; }
+    if (!categoryId) {
+      setSubcategories([]);
+      return;
+    }
     jobService
       .getJobSubcategories(categoryId)
       .then((res) => setSubcategories(res.data))
@@ -76,11 +97,15 @@ export default function BusinessTradePage() {
   }, [categoryId]);
 
   const validate = () => {
-    const e: Record<string,string> = {};
+    const e: Record<string, string> = {};
     if (!categoryId) e.category = 'Choose a trade';
-    if (selectedSubs.length === 0) e.subs = 'Choose at least one service you offer';
+    if (selectedSubs.length === 0)
+      e.subs = 'Choose at least one service you offer';
     if (!city.trim()) e.city = 'City is required';
-    if (postalCode && !/^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/.test(postalCode)) {
+    if (
+      postalCode &&
+      !/^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/.test(postalCode)
+    ) {
       e.postalCode = 'Invalid postal code';
     }
     if (!radius) e.radius = 'Select a travel radius';
@@ -159,7 +184,9 @@ export default function BusinessTradePage() {
               }}
               onBlur={validate}
               className={`w-full rounded border p-2 ${
-                errors.category ? 'border-error text-error' : 'border-brand-gray'
+                errors.category
+                  ? 'border-error text-error'
+                  : 'border-brand-gray'
               }`}
               aria-invalid={!!errors.category}
             >
@@ -219,7 +246,9 @@ export default function BusinessTradePage() {
               onChange={(e) => setYearsExp(e.target.value)}
               onBlur={validate}
               className={`w-full rounded border p-2 ${
-                errors.yearsExp ? 'border-error text-error' : 'border-brand-gray'
+                errors.yearsExp
+                  ? 'border-error text-error'
+                  : 'border-brand-gray'
               }`}
               aria-invalid={!!errors.yearsExp}
             />
@@ -250,7 +279,9 @@ export default function BusinessTradePage() {
               ))}
             </datalist>
             {!cities.includes(city) && city && !errors.city && (
-              <p className="text-sm italic text-gray-500">Check your spelling</p>
+              <p className="text-sm italic text-gray-500">
+                Check your spelling
+              </p>
             )}
             {errors.city && (
               <p className="text-sm italic text-error" role="alert">
@@ -270,7 +301,9 @@ export default function BusinessTradePage() {
               onChange={(e) => setPostalCode(e.target.value.toUpperCase())}
               onBlur={validate}
               className={`w-full rounded border p-2 ${
-                errors.postalCode ? 'border-error text-error' : 'border-brand-gray'
+                errors.postalCode
+                  ? 'border-error text-error'
+                  : 'border-brand-gray'
               }`}
               aria-invalid={!!errors.postalCode}
             />
@@ -296,7 +329,9 @@ export default function BusinessTradePage() {
             >
               <option value="">Select radius</option>
               {radiusOptions.map((r) => (
-                <option key={r} value={r}>{r === 25 ? '25+ km' : `${r} km`}</option>
+                <option key={r} value={r}>
+                  {r === 25 ? '25+ km' : `${r} km`}
+                </option>
               ))}
             </select>
             {errors.radius && (
@@ -305,7 +340,7 @@ export default function BusinessTradePage() {
               </p>
             )}
           </div>
-          <div className="flex justify-between pt-2 gap-2">
+          <div className="flex justify-between gap-2 pt-2">
             <Button
               onClick={() => navigate('/profile-setup')}
               variant="secondary"
@@ -316,7 +351,7 @@ export default function BusinessTradePage() {
             <Button
               onClick={handleSubmit}
               disabled={!canSubmit}
-              className="flex items-center justify-center w-1/2"
+              className="flex w-1/2 items-center justify-center"
             >
               {submitting && <Spinner className="mr-2 text-white" />}
               {submitting ? 'Next…' : 'Next'}

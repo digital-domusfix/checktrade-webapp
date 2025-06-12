@@ -9,11 +9,23 @@ vi.mock('../../../store/useAuthStore', () => ({
 
 vi.mock('../../../services/jobService', () => ({
   default: {
-    getJobCategories: vi.fn(() => Promise.resolve({ data: { categories: [{ id: { value: 'cat1' }, name: 'Plumbing' }] } })),
-    getJobSubcategories: vi.fn(() => Promise.resolve({ data: [{ id: 'sub1', name: 'Repair' }] })),
+    getJobCategories: vi.fn(() =>
+      Promise.resolve({
+        data: { categories: [{ id: { value: 'cat1' }, name: 'Plumbing' }] },
+      }),
+    ),
+    getJobSubcategories: vi.fn(() =>
+      Promise.resolve({ data: [{ id: 'sub1', name: 'Repair' }] }),
+    ),
   },
-  getJobCategories: vi.fn(() => Promise.resolve({ data: { categories: [{ id: { value: 'cat1' }, name: 'Plumbing' }] } })),
-  getJobSubcategories: vi.fn(() => Promise.resolve({ data: [{ id: 'sub1', name: 'Repair' }] })),
+  getJobCategories: vi.fn(() =>
+    Promise.resolve({
+      data: { categories: [{ id: { value: 'cat1' }, name: 'Plumbing' }] },
+    }),
+  ),
+  getJobSubcategories: vi.fn(() =>
+    Promise.resolve({ data: [{ id: 'sub1', name: 'Repair' }] }),
+  ),
 }));
 
 vi.mock('../../../services/profileService', () => ({
@@ -41,27 +53,41 @@ test('requires valid postal code', async () => {
   render(<BusinessTradePage />);
   await screen.findByText(/trade category/i);
 
-  fireEvent.change(screen.getByLabelText(/trade category/i), { target: { value: 'cat1' } });
+  fireEvent.change(screen.getByLabelText(/trade category/i), {
+    target: { value: 'cat1' },
+  });
   await screen.findByText(/services offered/i);
   fireEvent.click(screen.getByLabelText(/repair/i));
-  fireEvent.change(screen.getByLabelText(/city\/town/i), { target: { value: 'Halifax' } });
-  fireEvent.change(screen.getByLabelText(/postal code/i), { target: { value: '123' } });
-  fireEvent.change(screen.getByLabelText(/travel radius/i), { target: { value: '5' } });
+  fireEvent.change(screen.getByLabelText(/city\/town/i), {
+    target: { value: 'Halifax' },
+  });
+  fireEvent.change(screen.getByLabelText(/postal code/i), {
+    target: { value: '123' },
+  });
+  fireEvent.change(screen.getByLabelText(/travel radius/i), {
+    target: { value: '5' },
+  });
 
   fireEvent.click(screen.getByRole('button', { name: /next/i }));
   expect(await screen.findByText(/invalid postal code/i)).toBeInTheDocument();
 });
 
- test('submits when valid', async () => {
+test('submits when valid', async () => {
   completeMock.mockResolvedValueOnce({});
   render(<BusinessTradePage />);
   await screen.findByText(/trade category/i);
 
-  fireEvent.change(screen.getByLabelText(/trade category/i), { target: { value: 'cat1' } });
+  fireEvent.change(screen.getByLabelText(/trade category/i), {
+    target: { value: 'cat1' },
+  });
   await screen.findByText(/services offered/i);
   fireEvent.click(screen.getByLabelText(/repair/i));
-  fireEvent.change(screen.getByLabelText(/city\/town/i), { target: { value: 'Halifax' } });
-  fireEvent.change(screen.getByLabelText(/travel radius/i), { target: { value: '5' } });
+  fireEvent.change(screen.getByLabelText(/city\/town/i), {
+    target: { value: 'Halifax' },
+  });
+  fireEvent.change(screen.getByLabelText(/travel radius/i), {
+    target: { value: '5' },
+  });
 
   fireEvent.click(screen.getByRole('button', { name: /next/i }));
 
@@ -69,4 +95,4 @@ test('requires valid postal code', async () => {
     expect(completeMock).toHaveBeenCalled();
     expect(navigateMock).toHaveBeenCalledWith('/legal-credentials');
   });
- });
+});
