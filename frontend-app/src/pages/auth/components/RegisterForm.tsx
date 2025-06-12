@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Spinner } from '../../../components/Spinner';
-import { v4 as uuidv4 } from 'uuid'; // If you want to simulate a tenantId
 import { Button } from '../../../components/Button';
 import { useAuthStore } from '../../../store/useAuthStore';
 import { FcGoogle } from 'react-icons/fc';
@@ -40,11 +39,9 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onRegistered }) => {
     setSubmitting(true);
     try {
       const userId = await register({
-        login: email,
-        userType: 'Customer',
-        tenantId: uuidv4(), // Replace with real tenant ID
-        preferredLanguage: 'en',
-        referralSource: 'Website',
+        fullName,
+        email,
+        password,
       });
 
       onRegistered(userId);
