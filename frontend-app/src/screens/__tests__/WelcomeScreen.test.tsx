@@ -69,6 +69,3 @@ test('leaving and returning redirects to dashboard', () => {
   render(<WelcomeScreen />);
   expect(navigateMock).toHaveBeenCalledWith('/dashboard', { replace: true });
 });
-
-
-

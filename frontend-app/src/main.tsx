@@ -11,6 +11,8 @@ import './index.css';
 import HomePage from './pages/Home/HomePage';
 import Layout from './pages/Layout/Layout';
 import NewJobPage from './pages/Job/NewJobPage';
+import PostJobStep1 from './pages/PostJob/Step1';
+import PostJobStep2 from './pages/PostJob/Step2';
 import { ModalProvider } from './components/ModalManager'; // ✅ ADD THIS
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
@@ -28,6 +30,8 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
             <Route path="/profile-setup" element={<ProfileSetupPage />} />
             <Route path="/welcome" element={<WelcomePage />} />
             <Route path="/job/new" element={<NewJobPage />} />
+            <Route path="/post-job" element={<PostJobStep1 />} />
+            <Route path="/post-job/details" element={<PostJobStep2 />} />
           </Route>
         </Routes>
       </ModalProvider>
