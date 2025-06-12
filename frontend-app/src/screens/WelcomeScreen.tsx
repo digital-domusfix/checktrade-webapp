@@ -12,12 +12,6 @@ export default function WelcomeScreen() {
   const [pulse, setPulse] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // Immediately mark onboarding as complete once the user lands here so
-  // subsequent visits can bypass this screen.
-  useEffect(() => {
-    localStorage.setItem('onboarding-complete', 'true');
-  }, []);
-
   useEffect(() => {
     if (
       localStorage.getItem('onboarding-complete') === 'true' ||
@@ -58,7 +52,10 @@ export default function WelcomeScreen() {
         className="w-full max-w-md space-y-6 text-center"
       >
         <motion.div variants={item}>
-          <Handshake className="mx-auto size-20 text-primary" aria-hidden="true" />
+          <Handshake
+            className="mx-auto size-20 text-primary"
+            aria-hidden="true"
+          />
         </motion.div>
         <p className="sr-only" aria-live="polite">
           {`Welcome, ${firstName}! You're ready to post your first job.`}
