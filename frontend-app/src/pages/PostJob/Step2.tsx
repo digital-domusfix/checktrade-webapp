@@ -2,46 +2,10 @@ import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import jobService, { JobSubcategory } from '../../services/jobService';
+import type { Field } from './formConfigs';
+import { formConfigs } from './formConfigs';
 import { Button } from '../../components/Button';
 import { Spinner } from '../../components/Spinner';
-
-interface Field {
-  id: string;
-  label: string;
-  type: 'text' | 'select' | 'radio' | 'checkbox' | 'date' | 'number';
-  required?: boolean;
-  options?: string[];
-  min?: number;
-  max?: number;
-}
-
-const formConfigs: Record<string, Field[]> = {
-  faucet: [
-    {
-      id: 'faucetType',
-      label: 'What type of faucet?',
-      type: 'select',
-      required: true,
-      options: ['Kitchen', 'Bathroom', 'Outdoor'],
-    },
-    {
-      id: 'leaking',
-      label: 'Is the water currently leaking?',
-      type: 'radio',
-      required: true,
-      options: ['Yes', 'No'],
-    },
-  ],
-  lighting: [
-    {
-      id: 'fixtureType',
-      label: 'What kind of lights?',
-      type: 'select',
-      required: true,
-      options: ['Ceiling', 'Wall-mounted', 'Other'],
-    },
-  ],
-};
 
 const Step2 = () => {
   const { state } = useLocation() as {

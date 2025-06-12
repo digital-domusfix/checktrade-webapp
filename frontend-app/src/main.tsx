@@ -13,6 +13,8 @@ import Layout from './pages/Layout/Layout';
 import NewJobPage from './pages/Job/NewJobPage';
 import PostJobStep1 from './pages/PostJob/Step1';
 import PostJobStep2 from './pages/PostJob/Step2';
+import PostJobStep3 from './pages/PostJob/Step3';
+import PostJobReview from './pages/PostJob/Review';
 import { ModalProvider } from './components/ModalManager'; // ✅ ADD THIS
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
@@ -32,6 +34,8 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
             <Route path="/job/new" element={<NewJobPage />} />
             <Route path="/post-job" element={<PostJobStep1 />} />
             <Route path="/post-job/details" element={<PostJobStep2 />} />
+            <Route path="/post-job/schedule" element={<PostJobStep3 />} />
+            <Route path="/post-job/review" element={<PostJobReview />} />
           </Route>
         </Routes>
       </ModalProvider>
