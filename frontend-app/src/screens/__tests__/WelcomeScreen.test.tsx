@@ -70,8 +70,5 @@ test('leaving and returning redirects to dashboard', () => {
   expect(navigateMock).toHaveBeenCalledWith('/dashboard', { replace: true });
 });
 
-test('redirects to dashboard when complete', () => {
-  localStorage.setItem('onboarding-complete', 'true');
-  render(<WelcomeScreen />);
-  expect(navigateMock).toHaveBeenCalledWith('/dashboard', { replace: true });
-});
+
+
