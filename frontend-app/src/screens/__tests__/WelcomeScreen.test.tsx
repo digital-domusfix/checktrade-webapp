@@ -51,8 +51,24 @@ test('CTA sets flag and navigates', () => {
   expect(navigateMock).toHaveBeenCalledWith('/job/new');
 });
 
-test('redirects to dashboard when complete', () => {
-  localStorage.setItem('onboarding-complete', 'true');
+test('explore link sets flag and navigates', () => {
+  render(<WelcomeScreen />);
+  const link = screen.getByRole('button', { name: /explore dashboard/i });
+  fireEvent.click(link);
+  expect(localStorage.getItem('onboarding-complete')).toBe('true');
+  expect(navigateMock).toHaveBeenCalledWith('/dashboard', { replace: true });
+});
+
+test('leaving and returning redirects to dashboard', () => {
+  const { unmount } = render(<WelcomeScreen />);
+  const link = screen.getByRole('button', { name: /explore dashboard/i });
+  fireEvent.click(link);
+  navigateMock.mockClear();
+  unmount();
+
   render(<WelcomeScreen />);
   expect(navigateMock).toHaveBeenCalledWith('/dashboard', { replace: true });
 });
+
+
+
