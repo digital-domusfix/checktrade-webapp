@@ -1,6 +1,10 @@
 const express = require('express');
 const { v4: uuidv4 } = require('uuid');
 
+function generateOtp() {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
 const app = express();
 app.use(express.json());
 
@@ -19,10 +23,50 @@ app.post('/api/identity/register', (req, res) => {
     return res.status(409).json({ error: 'Email already registered' });
   }
 
-  const user = { id: uuidv4(), fullName, email, password };
+  const user = {
+    id: uuidv4(),
+    fullName,
+    email,
+    password,
+    otp: generateOtp(),
+    verified: false,
+  };
   users.push(user);
 
   res.status(201).json({ userId: user.id });
+});
+
+app.post('/api/identity/verify-otp', (req, res) => {
+  const { userId, emailOtp, mobileOtp } = req.body;
+  const user = users.find((u) => u.id === userId);
+  if (!user) {
+    return res.status(404).json({ error: 'User not found' });
+  }
+
+  const provided = emailOtp || mobileOtp;
+  if (!provided) {
+    return res.status(400).json({ error: 'OTP required' });
+  }
+
+  if (user.otp !== provided) {
+    return res.status(400).json({ error: 'Invalid OTP' });
+  }
+
+  user.verified = true;
+  user.otp = null;
+  res.json({ success: true });
+});
+
+app.post('/api/identity/resend-otp', (req, res) => {
+  const { userId } = req.body;
+  const user = users.find((u) => u.id === userId);
+  if (!user) {
+    return res.status(404).json({ error: 'User not found' });
+  }
+
+  user.otp = generateOtp();
+  user.verified = false;
+  res.json({ success: true });
 });
 
 app.post('/api/users/:userId/jobs', (req, res) => {

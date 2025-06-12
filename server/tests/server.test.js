@@ -56,4 +56,51 @@ describe('API', () => {
     expect(jobRes.body.userId).toBe(userId);
     expect(jobs.length).toBe(1);
   });
+
+  test('verify otp for user', async () => {
+    const payload = {
+      fullName: 'OTP User',
+      email: 'otp@example.com',
+      password: 'secret123',
+    };
+
+    const res = await request(app)
+      .post('/api/identity/register')
+      .send(payload);
+
+    const userId = res.body.userId;
+    const otp = users.find((u) => u.id === userId).otp;
+
+    const verifyRes = await request(app)
+      .post('/api/identity/verify-otp')
+      .send({ userId, emailOtp: otp });
+
+    expect(verifyRes.status).toBe(200);
+    const user = users.find((u) => u.id === userId);
+    expect(user.verified).toBe(true);
+  });
+
+  test('resend otp', async () => {
+    const payload = {
+      fullName: 'Resend User',
+      email: 'resend@example.com',
+      password: 'secret123',
+    };
+
+    const res = await request(app)
+      .post('/api/identity/register')
+      .send(payload);
+
+    const userId = res.body.userId;
+    const firstOtp = users.find((u) => u.id === userId).otp;
+
+    const resendRes = await request(app)
+      .post('/api/identity/resend-otp')
+      .send({ userId });
+
+    expect(resendRes.status).toBe(200);
+    const user = users.find((u) => u.id === userId);
+    expect(user.otp).not.toBe(firstOtp);
+    expect(user.verified).toBe(false);
+  });
 });
