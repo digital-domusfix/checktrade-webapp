@@ -45,14 +45,17 @@ beforeEach(() => {
 });
 
 it('posts job and navigates on success', async () => {
-  createJobMock.mockResolvedValue({});
+  createJobMock.mockResolvedValue({ data: { id: 'j1' } });
   render(<Review />);
   const postBtn = screen.getByRole('button', { name: /post job/i });
   fireEvent.click(postBtn);
   await waitFor(() => expect(createJobMock).toHaveBeenCalled());
   expect(localStorage.getItem('hasPostedJob')).toBe('true');
-  expect(await screen.findByText(/job posted!/i)).toBeInTheDocument();
-  await waitFor(() => expect(navigateMock).toHaveBeenCalledWith('/job/new'));
+  await waitFor(() =>
+    expect(navigateMock).toHaveBeenCalledWith('/job/success', {
+      state: { jobId: 'j1' },
+    }),
+  );
 });
 
 it('shows error when post fails', async () => {
