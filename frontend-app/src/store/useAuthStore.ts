@@ -35,7 +35,11 @@ export const useAuthStore = create<AuthState>((set) => ({
 register: async (req) => {
   try {
     set({ loading: true });
-    const { data } = await registerUser(req);
+    const { data } = await registerUser({
+      fullName: req.fullName,
+      email: req.email,
+      password: req.password,
+    });
     return data.userId; // 👈 Bubble this up
   } catch (err: any) {
     set({ error: err.message });

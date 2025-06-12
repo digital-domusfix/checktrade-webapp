@@ -1,13 +1,9 @@
 import http from './httpClient';
 
 export interface RegisterRequest {
-  login: string;
-  userType: string;
-  tenantId: string;
-  mobile?: string;
-  email?: string;
-  preferredLanguage? : string;
-  referralSource? : string
+  fullName: string;
+  email: string;
+  password: string;
 }
 
 export interface VerifyOtpRequest {
