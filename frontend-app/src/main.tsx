@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './features/auth/LoginPage';
 import SignupPage from './features/auth/SignupPage';
+import EmailVerificationPage from './features/auth/EmailVerificationPage';
 import Dashboard from './features/dashboard/Dashboard';
 import './index.css';
 import HomePage from './pages/Home/HomePage';
@@ -21,6 +22,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/verify-email" element={<EmailVerificationPage />} />
             <Route path="/job/new" element={<NewJobPage />} />
           </Route>
         </Routes>

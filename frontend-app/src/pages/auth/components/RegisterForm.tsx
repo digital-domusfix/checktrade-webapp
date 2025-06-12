@@ -5,7 +5,7 @@ import { useAuthStore } from '../../../store/useAuthStore';
 import { FcGoogle } from 'react-icons/fc';
 
 interface RegisterFormProps {
-  onRegistered: (userId: string) => void;
+  onRegistered: (userId: string, email: string) => void;
 }
 
 export const RegisterForm: React.FC<RegisterFormProps> = ({ onRegistered }) => {
@@ -44,7 +44,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onRegistered }) => {
         password,
       });
 
-      onRegistered(userId);
+      onRegistered(userId, email);
       setSubmitted(true);
     } catch (err: any) {
       const message = err?.response?.data?.message || err.message || 'Registration failed';
