@@ -338,12 +338,12 @@ export default function ProfileSetupPage({
                   onChange={handleFile}
                   className="hidden"
                 />
-                <div className="mx-auto h-24 w-24 overflow-hidden rounded-full bg-gray-200">
+                <div className="mx-auto size-24 overflow-hidden rounded-full bg-gray-200">
                   {photo && previewUrl && (
                     <img
                       src={previewUrl}
                       alt="Preview"
-                      className="h-full w-full object-cover"
+                      className="size-full object-cover"
                     />
                   )}
                 </div>

@@ -81,7 +81,7 @@ export default function WelcomeScreen() {
             disabled={loading}
             className={
               pulse
-                ? 'animate-pulse flex items-center justify-center'
+                ? 'flex animate-pulse items-center justify-center'
                 : 'flex items-center justify-center'
             }
           >
