@@ -10,6 +10,12 @@ export default function WelcomeScreen() {
   const navigate = useNavigate();
   const [pulse, setPulse] = useState(false);
 
+  // Immediately mark onboarding as complete once the user lands here so
+  // subsequent visits can bypass this screen.
+  useEffect(() => {
+    localStorage.setItem('onboarding-complete', 'true');
+  }, []);
+
   useEffect(() => {
     if (
       localStorage.getItem('onboarding-complete') === 'true' ||
