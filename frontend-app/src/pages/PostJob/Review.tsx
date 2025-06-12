@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '../../components/Button';
 import { Spinner } from '../../components/Spinner';
+import Toast from '../../components/Toast';
 import jobService, {
   JobCategory,
   JobSubcategory,
@@ -31,6 +32,7 @@ const Review = () => {
   const [fields, setFields] = useState<Field[]>([]);
   const [posting, setPosting] = useState(false);
   const [error, setError] = useState('');
+  const [toastMessage, setToastMessage] = useState('');
 
   useEffect(() => {
     if (!state) return;
@@ -88,7 +90,9 @@ const Review = () => {
     }
     try {
       await jobService.createJob(req as CreateJobRequest);
-      navigate('/job/new');
+      localStorage.setItem('hasPostedJob', 'true');
+      setToastMessage('Job posted!');
+      setTimeout(() => navigate('/job/new'), 800);
     } catch {
       setError('Failed to post job');
       setPosting(false);
@@ -267,6 +271,9 @@ const Review = () => {
           {posting && <Spinner className="mr-2" />}Post Job
         </Button>
       </div>
+      {toastMessage && (
+        <Toast message={toastMessage} onDismiss={() => setToastMessage('')} />
+      )}
     </div>
   );
 };

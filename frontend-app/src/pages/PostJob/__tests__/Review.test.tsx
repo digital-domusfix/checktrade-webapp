@@ -41,6 +41,7 @@ const createJobMock = vi.mocked(jobService.createJob);
 beforeEach(() => {
   navigateMock.mockClear();
   createJobMock.mockClear();
+  localStorage.clear();
 });
 
 it('posts job and navigates on success', async () => {
@@ -49,6 +50,8 @@ it('posts job and navigates on success', async () => {
   const postBtn = screen.getByRole('button', { name: /post job/i });
   fireEvent.click(postBtn);
   await waitFor(() => expect(createJobMock).toHaveBeenCalled());
+  expect(localStorage.getItem('hasPostedJob')).toBe('true');
+  expect(await screen.findByText(/job posted!/i)).toBeInTheDocument();
   await waitFor(() => expect(navigateMock).toHaveBeenCalledWith('/job/new'));
 });
 
