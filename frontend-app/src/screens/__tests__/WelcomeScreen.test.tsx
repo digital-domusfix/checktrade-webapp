@@ -25,13 +25,25 @@ test('shows first name in welcome message', () => {
   expect(screen.getByText(/welcome, john/i)).toBeInTheDocument();
 });
 
-test('cta stores flag and navigates', async () => {
+test('sets flag on mount and CTA navigates', async () => {
   render(<WelcomeScreen />);
-  fireEvent.click(screen.getByRole('button', { name: /post your first job/i }));
   await waitFor(() =>
     expect(localStorage.getItem('onboarding-complete')).toBe('true'),
   );
+  fireEvent.click(screen.getByRole('button', { name: /post your first job/i }));
   expect(navigateMock).toHaveBeenCalledWith('/job/new');
+});
+
+test('leaving and returning redirects to dashboard', async () => {
+  const { unmount } = render(<WelcomeScreen />);
+  await waitFor(() =>
+    expect(localStorage.getItem('onboarding-complete')).toBe('true'),
+  );
+  navigateMock.mockClear();
+  unmount();
+
+  render(<WelcomeScreen />);
+  expect(navigateMock).toHaveBeenCalledWith('/dashboard', { replace: true });
 });
 
 test('redirects to dashboard when complete', () => {
