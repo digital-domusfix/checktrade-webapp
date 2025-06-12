@@ -84,6 +84,14 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onRegistered }) => {
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
             onBlur={() => handleBlur('fullName')}
+            aria-describedby={
+              touched.fullName && !fullName.trim()
+                ? 'register-fullname-error'
+                : undefined
+            }
+            aria-invalid={
+              touched.fullName && !fullName.trim() ? 'true' : undefined
+            }
             className={`w-full rounded-md border p-3 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary ${
               touched.fullName && !fullName.trim()
                 ? 'border-error text-error'
@@ -91,9 +99,14 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onRegistered }) => {
             }`}
           />
           {touched.fullName && !fullName.trim() && (
-            <p className="mt-1 text-sm italic text-error transition-opacity">
-              Full name is required
-            </p>
+            <div aria-live="assertive">
+              <p
+                id="register-fullname-error"
+                className="mt-1 text-sm italic text-error transition-opacity"
+              >
+                Full name is required
+              </p>
+            </div>
           )}
         </div>
         <div className="space-y-1">
@@ -110,6 +123,14 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onRegistered }) => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             onBlur={() => handleBlur('email')}
+            aria-describedby={
+              touched.email && !isEmailValid(email)
+                ? 'register-email-error'
+                : undefined
+            }
+            aria-invalid={
+              touched.email && !isEmailValid(email) ? 'true' : undefined
+            }
             className={`w-full rounded-md border p-3 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary ${
               touched.email && !isEmailValid(email)
                 ? 'border-error text-error'
@@ -117,9 +138,14 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onRegistered }) => {
             }`}
           />
           {touched.email && !isEmailValid(email) && (
-            <p className="mt-1 text-sm italic text-error transition-opacity">
-              Enter a valid email
-            </p>
+            <div aria-live="assertive">
+              <p
+                id="register-email-error"
+                className="mt-1 text-sm italic text-error transition-opacity"
+              >
+                Enter a valid email
+              </p>
+            </div>
           )}
         </div>
         <div className="relative space-y-1">
@@ -136,6 +162,16 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onRegistered }) => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             onBlur={() => handleBlur('password')}
+            aria-describedby={
+              touched.password && !isPasswordValid(password)
+                ? 'register-password-error'
+                : undefined
+            }
+            aria-invalid={
+              touched.password && !isPasswordValid(password)
+                ? 'true'
+                : undefined
+            }
             className={`w-full rounded-md border p-3 pr-20 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary ${
               touched.password && !isPasswordValid(password)
                 ? 'border-error text-error'
@@ -150,9 +186,14 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onRegistered }) => {
             {showPassword ? 'Hide' : 'Show'}
           </button>
           {touched.password && !isPasswordValid(password) && (
-            <p className="mt-1 text-sm italic text-error transition-opacity">
-              Password must be at least 6 characters and include a number
-            </p>
+            <div aria-live="assertive">
+              <p
+                id="register-password-error"
+                className="mt-1 text-sm italic text-error transition-opacity"
+              >
+                Password must be at least 6 characters and include a number
+              </p>
+            </div>
           )}
           <p className="text-xs text-gray-500">
             8+ characters, at least one number

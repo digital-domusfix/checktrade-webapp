@@ -69,6 +69,49 @@ it('shows validation errors on blur when fields are invalid', async () => {
   expect(screen.getByRole('button', { name: /sign up/i })).toBeDisabled();
 });
 
+it('applies ARIA attributes to invalid fields', async () => {
+  render(<RegisterForm onRegistered={() => {}} />);
+
+  fireEvent.blur(screen.getByLabelText(/full name/i));
+  const fullNameError = await screen.findByText(/full name is required/i);
+  const fullNameInput = screen.getByLabelText(/full name/i);
+  expect(fullNameInput).toHaveAttribute('aria-invalid', 'true');
+  expect(fullNameInput).toHaveAttribute(
+    'aria-describedby',
+    'register-fullname-error',
+  );
+  expect(fullNameError).toHaveAttribute('id', 'register-fullname-error');
+  expect(fullNameError.parentElement).toHaveAttribute('aria-live', 'assertive');
+
+  fireEvent.change(screen.getByLabelText(/email address/i), {
+    target: { value: 'invalid' },
+  });
+  fireEvent.blur(screen.getByLabelText(/email address/i));
+  const emailError = await screen.findByText(/enter a valid email/i);
+  const emailInput = screen.getByLabelText(/email address/i);
+  expect(emailInput).toHaveAttribute('aria-invalid', 'true');
+  expect(emailInput).toHaveAttribute(
+    'aria-describedby',
+    'register-email-error',
+  );
+  expect(emailError).toHaveAttribute('id', 'register-email-error');
+
+  fireEvent.change(screen.getByLabelText(/password/i), {
+    target: { value: 'short' },
+  });
+  fireEvent.blur(screen.getByLabelText(/password/i));
+  const passwordError = await screen.findByText(
+    /password must be at least 6 characters/i,
+  );
+  const passwordInput = screen.getByLabelText(/^password$/i);
+  expect(passwordInput).toHaveAttribute('aria-invalid', 'true');
+  expect(passwordInput).toHaveAttribute(
+    'aria-describedby',
+    'register-password-error',
+  );
+  expect(passwordError).toHaveAttribute('id', 'register-password-error');
+});
+
 it('disables submit while submitting and navigates on success', async () => {
   const registerPromise = new Promise<string>((res) =>
     setTimeout(() => res('user1'), 10),

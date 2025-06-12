@@ -48,6 +48,8 @@ const LoginForm = ({ onLoggedIn }: Props) => {
           id="email"
           type="email"
           placeholder="Email"
+          aria-describedby={errors.email ? 'login-email-error' : undefined}
+          aria-invalid={errors.email ? 'true' : undefined}
           {...register('email', {
             required: 'Email is required',
             pattern: {
@@ -58,7 +60,11 @@ const LoginForm = ({ onLoggedIn }: Props) => {
           className={`w-full rounded-lg border p-3 ${errors.email ? 'border-red-500' : ''}`}
         />
         {errors.email && (
-          <p className="mt-1 text-sm text-red-500">{errors.email.message}</p>
+          <div aria-live="assertive">
+            <p id="login-email-error" className="mt-1 text-sm text-red-500">
+              {errors.email.message}
+            </p>
+          </div>
         )}
       </div>
       <div className="space-y-1">
@@ -72,6 +78,10 @@ const LoginForm = ({ onLoggedIn }: Props) => {
           id="password"
           type="password"
           placeholder="Password"
+          aria-describedby={
+            errors.password ? 'login-password-error' : undefined
+          }
+          aria-invalid={errors.password ? 'true' : undefined}
           {...register('password', {
             required: 'Password is required',
             minLength: {
@@ -86,7 +96,11 @@ const LoginForm = ({ onLoggedIn }: Props) => {
           className={`w-full rounded-lg border p-3 ${errors.password ? 'border-red-500' : ''}`}
         />
         {errors.password && (
-          <p className="mt-1 text-sm text-red-500">{errors.password.message}</p>
+          <div aria-live="assertive">
+            <p id="login-password-error" className="mt-1 text-sm text-red-500">
+              {errors.password.message}
+            </p>
+          </div>
         )}
       </div>
       <Button type="submit" className="w-full" disabled={submitting}>
