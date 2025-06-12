@@ -1,7 +1,8 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { vi } from 'vitest';
 import LegalCredentialsPage from '../LegalCredentialsPage';
+import legalService from '../../../services/legalService';
 
 const navigateMock = vi.fn();
 vi.mock('react-router-dom', async () => {
@@ -11,7 +12,16 @@ vi.mock('react-router-dom', async () => {
 
 global.URL.createObjectURL = vi.fn();
 
-test('submit disabled until required docs and terms provided', () => {
+vi.mock('../../../services/legalService', () => ({
+  default: {
+    uploadDocument: vi.fn(() => Promise.resolve({ id: 'd1' })),
+    submitCredentials: vi.fn(() => Promise.resolve()),
+  },
+}));
+
+const uploadMock = vi.mocked(legalService.uploadDocument);
+
+test('submit disabled until required docs and terms provided', async () => {
   render(<LegalCredentialsPage />);
 
   const submit = screen.getByRole('button', { name: /submit for approval/i });
@@ -24,10 +34,11 @@ test('submit disabled until required docs and terms provided', () => {
   const file = new File(['a'], 'a.pdf', { type: 'application/pdf' });
   fireEvent.change(insuranceInput, { target: { files: [file] } });
   fireEvent.change(idInput, { target: { files: [file] } });
+  await waitFor(() => expect(uploadMock).toHaveBeenCalledTimes(2));
 
   expect(submit).toBeDisabled();
   fireEvent.click(screen.getByLabelText(/i agree/i));
-  expect(submit).not.toBeDisabled();
+  await waitFor(() => expect(submit).not.toBeDisabled());
 });
 
 test('shows error on invalid file type', () => {

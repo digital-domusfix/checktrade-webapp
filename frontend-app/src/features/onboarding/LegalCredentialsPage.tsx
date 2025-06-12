@@ -1,7 +1,9 @@
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { CheckCircle } from 'lucide-react';
 import { Button } from '../../components/Button';
 import { Spinner } from '../../components/Spinner';
+import legalService from '../../services/legalService';
 
 const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png'];
 
@@ -16,6 +18,10 @@ export default function LegalCredentialsPage() {
   const [business, setBusiness] = useState<File | null>(null);
   const [govId, setGovId] = useState<File | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [status, setStatus] = useState<
+    Record<string, 'idle' | 'uploading' | 'success'>
+  >({});
+  const [docIds, setDocIds] = useState<Record<string, string>>({});
   const [agree, setAgree] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
@@ -34,16 +40,27 @@ export default function LegalCredentialsPage() {
     const err = validateFile(file);
     setErrors((e) => ({ ...e, [key]: err }));
     if (err) return;
-    setter(file);
+    setStatus((s) => ({ ...s, [key]: 'uploading' }));
+    legalService
+      .uploadDocument(file)
+      .then((res) => {
+        setter(file);
+        setDocIds((d) => ({ ...d, [key]: res.id }));
+        setStatus((s) => ({ ...s, [key]: 'success' }));
+      })
+      .catch(() => {
+        setErrors((e) => ({ ...e, [key]: 'Upload failed' }));
+        setStatus((s) => ({ ...s, [key]: 'idle' }));
+      });
   };
 
   const canSubmit =
-    insurance &&
-    govId &&
-    (soleTrader || business || !businessRef.current) &&
+    status.insurance === 'success' &&
+    status.govId === 'success' &&
+    (soleTrader || status.business === 'success' || !businessRef.current) &&
     agree;
 
-  const submit = () => {
+  const submit = async () => {
     const e: Record<string, string> = {};
     if (!insurance) e.insurance = 'Required';
     if (!soleTrader && !business) e.business = 'Required';
@@ -52,10 +69,17 @@ export default function LegalCredentialsPage() {
     setErrors(e);
     if (Object.keys(e).length > 0) return;
     setSubmitting(true);
-    setTimeout(() => {
-      setSubmitting(false);
+    try {
+      await legalService.submitCredentials({
+        insuranceId: docIds.insurance,
+        businessId: docIds.business,
+        govId: docIds.govId!,
+        soleTrader,
+      });
       navigate('/welcome');
-    }, 500);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -83,12 +107,28 @@ export default function LegalCredentialsPage() {
               type="file"
               accept=".pdf,.jpg,.jpeg,.png"
               onChange={(e) =>
-                handleFile(e.target.files && e.target.files[0], setInsurance, 'insurance')
+                handleFile(
+                  e.target.files && e.target.files[0],
+                  setInsurance,
+                  'insurance',
+                )
               }
               className="block w-full text-sm"
             />
+            {status.insurance === 'uploading' && (
+              <div className="flex items-center gap-1 text-sm text-gray-600">
+                <Spinner className="text-primary" /> Uploading…
+              </div>
+            )}
+            {status.insurance === 'success' && (
+              <div className="flex items-center gap-1 text-sm text-green-600">
+                <CheckCircle className="size-4" /> Uploaded
+              </div>
+            )}
             {errors.insurance && (
-              <p className="text-sm italic text-error">{errors.insurance}</p>
+              <p className="text-sm italic text-error" role="alert">
+                {errors.insurance}
+              </p>
             )}
           </div>
           {!soleTrader && (
@@ -102,12 +142,28 @@ export default function LegalCredentialsPage() {
                 type="file"
                 accept=".pdf,.jpg,.jpeg,.png"
                 onChange={(e) =>
-                  handleFile(e.target.files && e.target.files[0], setBusiness, 'business')
+                  handleFile(
+                    e.target.files && e.target.files[0],
+                    setBusiness,
+                    'business',
+                  )
                 }
                 className="block w-full text-sm"
               />
+              {status.business === 'uploading' && (
+                <div className="flex items-center gap-1 text-sm text-gray-600">
+                  <Spinner className="text-primary" /> Uploading…
+                </div>
+              )}
+              {status.business === 'success' && (
+                <div className="flex items-center gap-1 text-sm text-green-600">
+                  <CheckCircle className="size-4" /> Uploaded
+                </div>
+              )}
               {errors.business && (
-                <p className="text-sm italic text-error">{errors.business}</p>
+                <p className="text-sm italic text-error" role="alert">
+                  {errors.business}
+                </p>
               )}
             </div>
           )}
@@ -121,12 +177,28 @@ export default function LegalCredentialsPage() {
               type="file"
               accept=".pdf,.jpg,.jpeg,.png"
               onChange={(e) =>
-                handleFile(e.target.files && e.target.files[0], setGovId, 'govId')
+                handleFile(
+                  e.target.files && e.target.files[0],
+                  setGovId,
+                  'govId',
+                )
               }
               className="block w-full text-sm"
             />
+            {status.govId === 'uploading' && (
+              <div className="flex items-center gap-1 text-sm text-gray-600">
+                <Spinner className="text-primary" /> Uploading…
+              </div>
+            )}
+            {status.govId === 'success' && (
+              <div className="flex items-center gap-1 text-sm text-green-600">
+                <CheckCircle className="size-4" /> Uploaded
+              </div>
+            )}
             {errors.govId && (
-              <p className="text-sm italic text-error">{errors.govId}</p>
+              <p className="text-sm italic text-error" role="alert">
+                {errors.govId}
+              </p>
             )}
           </div>
           <label className="flex items-center gap-2 text-sm">
@@ -136,16 +208,30 @@ export default function LegalCredentialsPage() {
               onChange={(e) => setAgree(e.target.checked)}
             />
             I agree to the CheckTrade{' '}
-            <a href="#" className="text-primary underline">
+            <a
+              href="#"
+              target="_blank"
+              rel="noreferrer"
+              className="text-primary underline"
+            >
               Terms and Code of Conduct
             </a>
           </label>
-          {errors.agree && <p className="text-sm italic text-error">{errors.agree}</p>}
-          <div className="pt-2">
+          {errors.agree && (
+            <p className="text-sm italic text-error">{errors.agree}</p>
+          )}
+          <div className="flex justify-between pt-2 gap-2">
+            <Button
+              variant="secondary"
+              onClick={() => navigate('/business-profile')}
+              className="w-1/2"
+            >
+              Back
+            </Button>
             <Button
               onClick={submit}
               disabled={!canSubmit || submitting}
-              className="flex items-center justify-center w-full"
+              className="flex items-center justify-center w-1/2"
             >
               {submitting && <Spinner className="mr-2 text-white" />}
               {submitting ? 'Submitting…' : 'Submit for Approval'}
