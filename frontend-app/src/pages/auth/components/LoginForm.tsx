@@ -33,9 +33,15 @@ const LoginForm = ({ onLoggedIn }: Props) => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 max-w-md mx-auto">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="mx-auto max-w-md space-y-4"
+    >
       <div className="space-y-1">
-        <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+        <label
+          htmlFor="email"
+          className="block text-sm font-medium text-gray-700"
+        >
           Email
         </label>
         <input
@@ -49,14 +55,17 @@ const LoginForm = ({ onLoggedIn }: Props) => {
               message: 'Enter a valid email',
             },
           })}
-          className={`w-full p-3 border rounded-lg ${errors.email ? 'border-red-500' : ''}`}
+          className={`w-full rounded-lg border p-3 ${errors.email ? 'border-red-500' : ''}`}
         />
         {errors.email && (
-          <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+          <p className="mt-1 text-sm text-red-500">{errors.email.message}</p>
         )}
       </div>
       <div className="space-y-1">
-        <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+        <label
+          htmlFor="password"
+          className="block text-sm font-medium text-gray-700"
+        >
           Password
         </label>
         <input
@@ -74,10 +83,10 @@ const LoginForm = ({ onLoggedIn }: Props) => {
               message: 'Password must contain at least one number',
             },
           })}
-          className={`w-full p-3 border rounded-lg ${errors.password ? 'border-red-500' : ''}`}
+          className={`w-full rounded-lg border p-3 ${errors.password ? 'border-red-500' : ''}`}
         />
         {errors.password && (
-          <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
+          <p className="mt-1 text-sm text-red-500">{errors.password.message}</p>
         )}
       </div>
       <Button type="submit" className="w-full" disabled={submitting}>

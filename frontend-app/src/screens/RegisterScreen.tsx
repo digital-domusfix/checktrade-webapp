@@ -8,9 +8,9 @@ export const RegisterScreen = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="flex min-h-screen items-center justify-center p-4">
       <div className="w-full max-w-[400px]">
-        <h1 className="text-2xl font-bold text-center mb-6">Join CheckTrade</h1>
+        <h1 className="mb-6 text-center text-2xl font-bold">Join CheckTrade</h1>
         <RegisterForm onRegistered={handleRegisterSuccess} />
       </div>
     </div>

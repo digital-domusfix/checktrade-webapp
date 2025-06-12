@@ -47,16 +47,24 @@ export const EmailVerificationScreen = ({ userId, email }: Props) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="flex min-h-screen items-center justify-center p-4">
       <div className="w-full max-w-md space-y-6 text-center">
-        <MailCheck className="w-16 h-16 mx-auto text-primary" />
+        <MailCheck className="mx-auto size-16 text-primary" />
         <p className="text-lg">
-          Please verify your email – we&apos;ve sent a confirmation link to {email}
+          Please verify your email – we&apos;ve sent a confirmation link to{' '}
+          {email}
         </p>
         <div className="space-y-2">
-          <Button onClick={handleResend} disabled={resending} variant="outline" className="w-full">
+          <Button
+            onClick={handleResend}
+            disabled={resending}
+            variant="outline"
+            className="w-full"
+          >
             {resending ? (
-              <span className="flex items-center justify-center gap-2"><Spinner className="text-primary" /> Resending…</span>
+              <span className="flex items-center justify-center gap-2">
+                <Spinner className="text-primary" /> Resending…
+              </span>
             ) : (
               'Resend Email'
             )}
@@ -64,12 +72,16 @@ export const EmailVerificationScreen = ({ userId, email }: Props) => {
           <button
             type="button"
             onClick={() => navigate('/signup')}
-            className="block mx-auto text-sm underline text-primary"
+            className="mx-auto block text-sm text-primary underline"
           >
             Change Email
           </button>
         </div>
-        <Button onClick={handleContinue} disabled={!verified} className="w-full">
+        <Button
+          onClick={handleContinue}
+          disabled={!verified}
+          className="w-full"
+        >
           Continue
         </Button>
       </div>

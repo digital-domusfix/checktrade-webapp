@@ -12,11 +12,11 @@ const ContractorHighlights: React.FC = () => (
       {contractors.map((c, i) => (
         <div
           key={i}
-          className="border p-4 rounded-lg bg-white shadow-sm hover:shadow-md transition"
+          className="rounded-lg border bg-white p-4 shadow-sm transition hover:shadow-md"
         >
           <h4 className="text-lg font-bold">{c.name}</h4>
           <p className="text-sm text-gray-600">{c.location}</p>
-          <p className="text-sm mt-2 text-gray-500">
+          <p className="mt-2 text-sm text-gray-500">
             ⭐ {c.rating} / 5 • {c.years} years in business
           </p>
         </div>

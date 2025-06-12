@@ -23,8 +23,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onRegistered }) => {
   const [error, setError] = useState('');
   const register = useAuthStore((s) => s.register);
 
-  const isEmailValid = (val: string) =>
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+  const isEmailValid = (val: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
 
   const isPasswordValid = (val: string) => val.length >= 6 && /\d/.test(val);
 
@@ -47,7 +46,8 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onRegistered }) => {
       onRegistered(userId, email);
       setSubmitted(true);
     } catch (err: any) {
-      const message = err?.response?.data?.message || err.message || 'Registration failed';
+      const message =
+        err?.response?.data?.message || err.message || 'Registration failed';
       setError(message);
     } finally {
       setSubmitting(false);
@@ -60,10 +60,10 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onRegistered }) => {
   return submitted ? (
     <div className="text-center text-primary">OTP sent! Please verify.</div>
   ) : (
-    <form onSubmit={handleSubmit} className="space-y-6 max-w-[400px] mx-auto">
+    <form onSubmit={handleSubmit} className="mx-auto max-w-[400px] space-y-6">
       {error && (
         <div
-          className="bg-red-100 text-red-700 p-2 rounded text-sm transition-opacity"
+          className="rounded bg-red-100 p-2 text-sm text-red-700 transition-opacity"
           role="alert"
         >
           {error}
@@ -71,89 +71,120 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onRegistered }) => {
       )}
       <div className="space-y-4">
         <div className="space-y-1">
-          <label htmlFor="fullName" className="block text-sm font-semibold text-gray-700">
-          Full name
+          <label
+            htmlFor="fullName"
+            className="block text-sm font-semibold text-gray-700"
+          >
+            Full name
           </label>
-        <input
-          id="fullName"
-          type="text"
-          placeholder="Full name"
-          value={fullName}
-          onChange={(e) => setFullName(e.target.value)}
-          onBlur={() => handleBlur('fullName')}
-          className={`w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary ${
-            touched.fullName && !fullName.trim() ? 'border-error text-error' : 'border-brand-gray'
-          }`}
-        />
-        {touched.fullName && !fullName.trim() && (
-          <p className="text-error text-sm italic mt-1 transition-opacity">Full name is required</p>
-        )}
+          <input
+            id="fullName"
+            type="text"
+            placeholder="Full name"
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+            onBlur={() => handleBlur('fullName')}
+            className={`w-full rounded-md border p-3 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary ${
+              touched.fullName && !fullName.trim()
+                ? 'border-error text-error'
+                : 'border-brand-gray'
+            }`}
+          />
+          {touched.fullName && !fullName.trim() && (
+            <p className="mt-1 text-sm italic text-error transition-opacity">
+              Full name is required
+            </p>
+          )}
         </div>
         <div className="space-y-1">
-          <label htmlFor="email" className="block text-sm font-semibold text-gray-700">
-          Email address
+          <label
+            htmlFor="email"
+            className="block text-sm font-semibold text-gray-700"
+          >
+            Email address
           </label>
-        <input
-          id="email"
-          type="email"
-          placeholder="Email address"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          onBlur={() => handleBlur('email')}
-          className={`w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary ${
-            touched.email && !isEmailValid(email) ? 'border-error text-error' : 'border-brand-gray'
-          }`}
-        />
-        {touched.email && !isEmailValid(email) && (
-          <p className="text-error text-sm italic mt-1 transition-opacity">Enter a valid email</p>
-        )}
+          <input
+            id="email"
+            type="email"
+            placeholder="Email address"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            onBlur={() => handleBlur('email')}
+            className={`w-full rounded-md border p-3 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary ${
+              touched.email && !isEmailValid(email)
+                ? 'border-error text-error'
+                : 'border-brand-gray'
+            }`}
+          />
+          {touched.email && !isEmailValid(email) && (
+            <p className="mt-1 text-sm italic text-error transition-opacity">
+              Enter a valid email
+            </p>
+          )}
         </div>
         <div className="relative space-y-1">
-          <label htmlFor="password" className="block text-sm font-semibold text-gray-700">
-          Password
+          <label
+            htmlFor="password"
+            className="block text-sm font-semibold text-gray-700"
+          >
+            Password
           </label>
-        <input
-          id="password"
-          type={showPassword ? 'text' : 'password'}
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          onBlur={() => handleBlur('password')}
-          className={`w-full p-3 border rounded-md pr-20 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary ${
-            touched.password && !isPasswordValid(password) ? 'border-error text-error' : 'border-brand-gray'
-          }`}
-        />
-        <button
-          type="button"
-          onClick={() => setShowPassword((p) => !p)}
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-primary"
-        >
-          {showPassword ? 'Hide' : 'Show'}
-        </button>
-        {touched.password && !isPasswordValid(password) && (
-          <p className="text-error text-sm italic mt-1 transition-opacity">
-            Password must be at least 6 characters and include a number
+          <input
+            id="password"
+            type={showPassword ? 'text' : 'password'}
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            onBlur={() => handleBlur('password')}
+            className={`w-full rounded-md border p-3 pr-20 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary ${
+              touched.password && !isPasswordValid(password)
+                ? 'border-error text-error'
+                : 'border-brand-gray'
+            }`}
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword((p) => !p)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-primary"
+          >
+            {showPassword ? 'Hide' : 'Show'}
+          </button>
+          {touched.password && !isPasswordValid(password) && (
+            <p className="mt-1 text-sm italic text-error transition-opacity">
+              Password must be at least 6 characters and include a number
+            </p>
+          )}
+          <p className="text-xs text-gray-500">
+            8+ characters, at least one number
           </p>
-        )}
-        <p className="text-xs text-gray-500">8+ characters, at least one number</p>
         </div>
       </div>
-      <Button type="submit" className="w-full flex items-center justify-center" disabled={submitting || !isFormValid}>
-        {submitting && <Spinner className="text-white mr-2" />}
+      <Button
+        type="submit"
+        className="flex w-full items-center justify-center"
+        disabled={submitting || !isFormValid}
+      >
+        {submitting && <Spinner className="mr-2 text-white" />}
         {submitting ? 'Signing up…' : 'Sign Up'}
       </Button>
       <button
         type="button"
-        onClick={() => (window.location.href = `${import.meta.env.VITE_API_BASE_URL}/api/identity/oauth/google`)}
-        className="w-full flex items-center justify-center gap-2 py-2 px-4 border border-gray-300 rounded-md hover:bg-gray-100"
+        onClick={() =>
+          (window.location.href = `${import.meta.env.VITE_API_BASE_URL}/api/identity/oauth/google`)
+        }
+        className="flex w-full items-center justify-center gap-2 rounded-md border border-gray-300 px-4 py-2 hover:bg-gray-100"
       >
         <FcGoogle size={20} />
-        <span className="text-sm font-medium text-gray-800">Continue with Google</span>
+        <span className="text-sm font-medium text-gray-800">
+          Continue with Google
+        </span>
       </button>
-      <a href="/login" className="block text-center text-sm underline text-primary">
+      <a
+        href="/login"
+        className="block text-center text-sm text-primary underline"
+      >
         Already have an account? Log in
       </a>
     </form>
   );
 };
-

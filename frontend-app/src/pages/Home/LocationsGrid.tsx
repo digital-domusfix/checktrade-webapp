@@ -14,17 +14,20 @@ const cityStats = [
 
 const LocationsGrid = () => {
   return (
-    <SectionWrapper title="Trusted by homeowners across Nova Scotia" className="bg-white">
-      <p className="text-center text-gray-600 mb-6">
+    <SectionWrapper
+      title="Trusted by homeowners across Nova Scotia"
+      className="bg-white"
+    >
+      <p className="mb-6 text-center text-gray-600">
         We’ve helped thousands find trusted contractors near them. Here’s where:
       </p>
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
+      <div className="grid grid-cols-2 gap-4 text-sm sm:grid-cols-4">
         {cityStats.map(({ name, jobs }) => (
           <div
             key={name}
-            className="bg-base p-4 rounded shadow-sm hover:shadow-md transition cursor-pointer text-center"
+            className="cursor-pointer rounded bg-base p-4 text-center shadow-sm transition hover:shadow-md"
           >
-            <MapPin className="mx-auto text-primary w-5 h-5 mb-2" />
+            <MapPin className="mx-auto mb-2 size-5 text-primary" />
             <p className="font-medium text-gray-800">{name}</p>
             <p className="text-xs text-gray-500">{jobs}+ jobs posted</p>
           </div>

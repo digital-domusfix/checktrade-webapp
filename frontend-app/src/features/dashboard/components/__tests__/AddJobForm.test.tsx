@@ -2,7 +2,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
 import AddJobForm from '../AddJobForm';
 
-var createJobMock: any;
+let createJobMock: any;
 vi.mock('../../../../services/jobService', () => {
   createJobMock = vi.fn().mockResolvedValue({});
   return { default: { createJob: createJobMock } };

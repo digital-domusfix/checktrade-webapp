@@ -1,11 +1,6 @@
 import { SectionWrapper } from '../../components/SectionWrapper';
 import { Button } from '../../components/Button';
-import {
-  ShieldCheck,
-  Home,
-  DollarSign,
-  Smile,
-} from 'lucide-react';
+import { ShieldCheck, Home, DollarSign, Smile } from 'lucide-react';
 
 import { motion } from 'framer-motion';
 
@@ -13,22 +8,26 @@ const benefits = [
   {
     icon: ShieldCheck,
     title: 'Verified Pros Only',
-    description: 'No amateurs. Only vetted, licensed, and insured contractors make the cut.',
+    description:
+      'No amateurs. Only vetted, licensed, and insured contractors make the cut.',
   },
   {
     icon: Home,
     title: 'Built for Nova Scotia',
-    description: 'We know the climate, codes, and quirks of Atlantic Canadian homes.',
+    description:
+      'We know the climate, codes, and quirks of Atlantic Canadian homes.',
   },
   {
     icon: DollarSign,
     title: 'Fair & Direct Pricing',
-    description: 'No platform fees or middlemen. You deal direct, with full transparency.',
+    description:
+      'No platform fees or middlemen. You deal direct, with full transparency.',
   },
   {
     icon: Smile,
     title: 'Real Human Help',
-    description: 'Stuck or confused? Our local support team is a call away — no bots.',
+    description:
+      'Stuck or confused? Our local support team is a call away — no bots.',
   },
 ];
 
@@ -38,23 +37,24 @@ const WhyCheckTradeSection = () => (
     title="Why Homeowners Trust CheckTrade"
     className="bg-white"
   >
-    <p className="text-center max-w-2xl mx-auto text-gray-600 mb-10">
-      We’re more than just a job board — we’re your partner for stress-free home projects. Here’s what makes CheckTrade the trusted choice in Nova Scotia:
+    <p className="mx-auto mb-10 max-w-2xl text-center text-gray-600">
+      We’re more than just a job board — we’re your partner for stress-free home
+      projects. Here’s what makes CheckTrade the trusted choice in Nova Scotia:
     </p>
 
-    <div className="grid sm:grid-cols-2 gap-8">
+    <div className="grid gap-8 sm:grid-cols-2">
       {benefits.map(({ icon: Icon, title, description }, i) => (
         <motion.div
           key={i}
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ delay: i * 0.15 }}
-          className="flex gap-4 items-start bg-base p-6 rounded-xl shadow-sm hover:shadow-md transition"
+          className="flex items-start gap-4 rounded-xl bg-base p-6 shadow-sm transition hover:shadow-md"
         >
-            <Icon className="w-6 h-6 text-primary" />
+          <Icon className="size-6 text-primary" />
           <div>
-            <h4 className="font-semibold text-lg text-gray-800">{title}</h4>
-            <p className="text-sm text-gray-600 mt-1">{description}</p>
+            <h4 className="text-lg font-semibold text-gray-800">{title}</h4>
+            <p className="mt-1 text-sm text-gray-600">{description}</p>
           </div>
         </motion.div>
       ))}
@@ -64,7 +64,9 @@ const WhyCheckTradeSection = () => (
       <Button variant="primary" className="text-sm">
         Post a Job — It’s Free
       </Button>
-      <p className="text-gray-500 text-xs mt-2">No cost. No obligation. Just trusted help.</p>
+      <p className="mt-2 text-xs text-gray-500">
+        No cost. No obligation. Just trusted help.
+      </p>
     </div>
   </SectionWrapper>
 );

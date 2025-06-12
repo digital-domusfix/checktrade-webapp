@@ -30,10 +30,10 @@ export const PropertyCard = ({ property, onAddJob }: Props) => {
   const quotesPending = jobs.filter((j) => j.quoteStatus !== 'Received').length;
 
   return (
-    <div className="border rounded-lg p-4 bg-white shadow-sm mb-4">
-      <div className="flex justify-between items-center">
+    <div className="mb-4 rounded-lg border bg-white p-4 shadow-sm">
+      <div className="flex items-center justify-between">
         <div>
-          <h3 className="font-semibold text-lg">
+          <h3 className="text-lg font-semibold">
             {property.nickname || property.address?.line1}
           </h3>
           <p className="text-sm text-gray-600">
@@ -57,7 +57,7 @@ export const PropertyCard = ({ property, onAddJob }: Props) => {
           <div className="text-sm text-gray-700">
             Quotes Received: {quotesReceived} | Pending: {quotesPending}
           </div>
-          <ul className="mt-2 border-t pt-2 space-y-1">
+          <ul className="mt-2 space-y-1 border-t pt-2">
             {jobs.map((job) => (
               <li key={job.id} className="text-sm">
                 {job.title} - {job.status}

@@ -6,14 +6,14 @@ const httpClient = axios.create({
 });
 
 httpClient.interceptors.response.use(
-  response => response,
-  error => {
+  (response) => response,
+  (error) => {
     if (error.response?.status === 401) {
       console.warn('Unauthorized – consider triggering logout or refresh');
       // Optional: trigger logout
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 export default httpClient;
