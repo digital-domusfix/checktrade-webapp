@@ -1,9 +1,10 @@
 import http from './httpClient';
 
 export interface RegisterRequest {
-  fullName: string;
+  fullName?: string;
   email: string;
   password: string;
+  role: 'homeowner' | 'contractor';
 }
 
 export interface VerifyOtpRequest {

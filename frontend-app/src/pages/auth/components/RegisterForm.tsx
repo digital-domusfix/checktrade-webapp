@@ -5,18 +5,23 @@ import { useAuthStore } from '../../../store/useAuthStore';
 import { FcGoogle } from 'react-icons/fc';
 
 interface RegisterFormProps {
-  onRegistered: (userId: string, email: string) => void;
+  onRegistered: (
+    userId: string,
+    email: string,
+    role: 'homeowner' | 'contractor',
+  ) => void;
 }
 
 export const RegisterForm: React.FC<RegisterFormProps> = ({ onRegistered }) => {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [role, setRole] = useState<'homeowner' | 'contractor' | ''>('');
   const [showPassword, setShowPassword] = useState(false);
   const [touched, setTouched] = useState({
-    fullName: false,
     email: false,
     password: false,
+    role: false,
   });
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -25,12 +30,12 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onRegistered }) => {
 
   const isEmailValid = (val: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
 
-  const isPasswordValid = (val: string) => val.length >= 6 && /\d/.test(val);
+  const isPasswordValid = (val: string) => val.length >= 8 && /\d/.test(val);
 
   const isFormValid =
-    fullName.trim().length > 0 &&
     isEmailValid(email) &&
-    isPasswordValid(password);
+    isPasswordValid(password) &&
+    !!role;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,13 +46,17 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onRegistered }) => {
         fullName,
         email,
         password,
+        role: role as 'homeowner' | 'contractor',
       });
 
-      onRegistered(userId, email);
+      onRegistered(userId, email, role as 'homeowner' | 'contractor');
       setSubmitted(true);
     } catch (err: any) {
       const message =
-        err?.response?.data?.message || err.message || 'Registration failed';
+        err?.response?.data?.error ||
+        err?.response?.data?.message ||
+        err.message ||
+        'Registration failed';
       setError(message);
     } finally {
       setSubmitting(false);
@@ -75,7 +84,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onRegistered }) => {
             htmlFor="fullName"
             className="block text-sm font-semibold text-gray-700"
           >
-            Full name
+            Full name (optional)
           </label>
           <input
             id="fullName"
@@ -83,31 +92,8 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onRegistered }) => {
             placeholder="Full name"
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
-            onBlur={() => handleBlur('fullName')}
-            aria-describedby={
-              touched.fullName && !fullName.trim()
-                ? 'register-fullname-error'
-                : undefined
-            }
-            aria-invalid={
-              touched.fullName && !fullName.trim() ? 'true' : undefined
-            }
-            className={`w-full rounded-md border p-3 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary ${
-              touched.fullName && !fullName.trim()
-                ? 'border-error text-error'
-                : 'border-brand-gray'
-            }`}
+            className="w-full rounded-md border border-brand-gray p-3 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary"
           />
-          {touched.fullName && !fullName.trim() && (
-            <div aria-live="assertive">
-              <p
-                id="register-fullname-error"
-                className="mt-1 text-sm italic text-error transition-opacity"
-              >
-                Full name is required
-              </p>
-            </div>
-          )}
         </div>
         <div className="space-y-1">
           <label
@@ -191,13 +177,55 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onRegistered }) => {
                 id="register-password-error"
                 className="mt-1 text-sm italic text-error transition-opacity"
               >
-                Password must be at least 6 characters and include a number
+                Password must be at least 8 characters and include a number
               </p>
             </div>
           )}
           <p className="text-xs text-gray-500">
             8+ characters, at least one number
           </p>
+        </div>
+        <div className="space-y-1">
+          <label className="block text-sm font-semibold text-gray-700">
+            Select your role
+          </label>
+          <div className="flex gap-4">
+            <label className="flex items-center gap-1">
+              <input
+                type="radio"
+                name="role"
+                value="homeowner"
+                checked={role === 'homeowner'}
+                onChange={() => setRole('homeowner')}
+                onBlur={() => handleBlur('role')}
+                aria-describedby={
+                  touched.role && !role ? 'register-role-error' : undefined
+                }
+                aria-invalid={touched.role && !role ? 'true' : undefined}
+              />
+              I’m a Homeowner
+            </label>
+            <label className="flex items-center gap-1">
+              <input
+                type="radio"
+                name="role"
+                value="contractor"
+                checked={role === 'contractor'}
+                onChange={() => setRole('contractor')}
+                onBlur={() => handleBlur('role')}
+                aria-describedby={
+                  touched.role && !role ? 'register-role-error' : undefined
+                }
+                aria-invalid={touched.role && !role ? 'true' : undefined}
+              />
+              I’m a Tradesperson / Contractor
+            </label>
+          </div>
+          {touched.role && !role && (
+            <p id="register-role-error" className="text-sm italic text-error">
+              Please select a role
+            </p>
+          )}
         </div>
       </div>
       <Button

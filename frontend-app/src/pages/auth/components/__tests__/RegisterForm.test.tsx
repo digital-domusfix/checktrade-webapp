@@ -20,9 +20,6 @@ it('enables submit when form is valid and navigates to verification screen', asy
   const button = screen.getByRole('button', { name: /sign up/i });
   expect(button).toBeDisabled();
 
-  fireEvent.change(screen.getByPlaceholderText(/full name/i), {
-    target: { value: 'John Doe' },
-  });
   fireEvent.change(screen.getByPlaceholderText(/email address/i), {
     target: { value: 'john@example.com' },
   });
@@ -35,6 +32,8 @@ it('enables submit when form is valid and navigates to verification screen', asy
   fireEvent.change(screen.getByPlaceholderText(/password/i), {
     target: { value: 'secret123' },
   });
+
+  fireEvent.click(screen.getByLabelText(/homeowner/i));
 
   expect(button).not.toBeDisabled();
   fireEvent.submit(button);
@@ -49,8 +48,8 @@ it('enables submit when form is valid and navigates to verification screen', asy
 it('shows validation errors on blur when fields are invalid', async () => {
   render(<RegisterForm onRegistered={() => {}} />);
 
-  fireEvent.blur(screen.getByLabelText(/full name/i));
-  expect(await screen.findByText(/full name is required/i)).toBeInTheDocument();
+  fireEvent.blur(screen.getByLabelText(/homeowner/i));
+  expect(await screen.findByText(/please select a role/i)).toBeInTheDocument();
 
   fireEvent.change(screen.getByLabelText(/email address/i), {
     target: { value: 'invalid' },
@@ -63,7 +62,7 @@ it('shows validation errors on blur when fields are invalid', async () => {
   });
   fireEvent.blur(screen.getByLabelText(/password/i));
   expect(
-    await screen.findByText(/password must be at least 6 characters/i),
+    await screen.findByText(/password must be at least 8 characters/i),
   ).toBeInTheDocument();
 
   expect(screen.getByRole('button', { name: /sign up/i })).toBeDisabled();
@@ -72,16 +71,12 @@ it('shows validation errors on blur when fields are invalid', async () => {
 it('applies ARIA attributes to invalid fields', async () => {
   render(<RegisterForm onRegistered={() => {}} />);
 
-  fireEvent.blur(screen.getByLabelText(/full name/i));
-  const fullNameError = await screen.findByText(/full name is required/i);
-  const fullNameInput = screen.getByLabelText(/full name/i);
-  expect(fullNameInput).toHaveAttribute('aria-invalid', 'true');
-  expect(fullNameInput).toHaveAttribute(
-    'aria-describedby',
-    'register-fullname-error',
-  );
-  expect(fullNameError).toHaveAttribute('id', 'register-fullname-error');
-  expect(fullNameError.parentElement).toHaveAttribute('aria-live', 'assertive');
+  fireEvent.blur(screen.getByLabelText(/homeowner/i));
+  const roleError = await screen.findByText(/please select a role/i);
+  const homeownerInput = screen.getByLabelText(/homeowner/i);
+  expect(homeownerInput).toHaveAttribute('aria-invalid', 'true');
+  expect(homeownerInput).toHaveAttribute('aria-describedby', 'register-role-error');
+  expect(roleError).toHaveAttribute('id', 'register-role-error');
 
   fireEvent.change(screen.getByLabelText(/email address/i), {
     target: { value: 'invalid' },
@@ -101,7 +96,7 @@ it('applies ARIA attributes to invalid fields', async () => {
   });
   fireEvent.blur(screen.getByLabelText(/password/i));
   const passwordError = await screen.findByText(
-    /password must be at least 6 characters/i,
+    /password must be at least 8 characters/i,
   );
   const passwordInput = screen.getByLabelText(/^password$/i);
   expect(passwordInput).toHaveAttribute('aria-invalid', 'true');
@@ -120,15 +115,13 @@ it('disables submit while submitting and navigates on success', async () => {
 
   render(<RegisterScreen />);
 
-  fireEvent.change(screen.getByPlaceholderText(/full name/i), {
-    target: { value: 'John Doe' },
-  });
   fireEvent.change(screen.getByPlaceholderText(/email address/i), {
     target: { value: 'john@example.com' },
   });
   fireEvent.change(screen.getByPlaceholderText(/password/i), {
     target: { value: 'secret123' },
   });
+  fireEvent.click(screen.getByLabelText(/homeowner/i));
 
   const button = screen.getByRole('button', { name: /sign up/i });
   fireEvent.submit(button);

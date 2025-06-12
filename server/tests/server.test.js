@@ -12,6 +12,7 @@ describe('API', () => {
       fullName: 'Test User',
       email: 'test@example.com',
       password: 'secret123',
+      role: 'homeowner',
     };
 
     const res = await request(app)
@@ -29,6 +30,7 @@ describe('API', () => {
       fullName: 'Existing User',
       email: 'existing@example.com',
       password: 'secret123',
+      role: 'homeowner',
     };
 
     await request(app).post('/api/identity/register').send(payload);
@@ -39,6 +41,39 @@ describe('API', () => {
     expect(users.length).toBe(1);
   });
 
+  test('registers without full name', async () => {
+    const payload = {
+      email: 'nofull@example.com',
+      password: 'secret123',
+      role: 'contractor',
+    };
+
+    const res = await request(app)
+      .post('/api/identity/register')
+      .send(payload);
+
+    expect(res.status).toBe(201);
+    expect(users[0]).toMatchObject({ ...payload, fullName: '' });
+  });
+
+  test('registration fails with weak password', async () => {
+    const res = await request(app)
+      .post('/api/identity/register')
+      .send({ email: 'weak@example.com', password: 'short1', role: 'homeowner' });
+
+    expect(res.status).toBe(400);
+    expect(res.body.error).toMatch(/password/i);
+  });
+
+  test('registration fails without role', async () => {
+    const res = await request(app)
+      .post('/api/identity/register')
+      .send({ email: 'norole@example.com', password: 'secret123' });
+
+    expect(res.status).toBe(400);
+    expect(res.body.error).toMatch(/role/);
+  });
+
   test('create job for user', async () => {
     const userRes = await request(app)
       .post('/api/identity/register')
@@ -46,6 +81,7 @@ describe('API', () => {
         fullName: 'Job User',
         email: 'job@example.com',
         password: 'secret123',
+        role: 'homeowner',
       });
     const userId = userRes.body.userId;
     const jobRes = await request(app)
@@ -62,6 +98,7 @@ describe('API', () => {
       fullName: 'OTP User',
       email: 'otp@example.com',
       password: 'secret123',
+      role: 'contractor',
     };
 
     const res = await request(app)
@@ -85,6 +122,7 @@ describe('API', () => {
       fullName: 'Resend User',
       email: 'resend@example.com',
       password: 'secret123',
+      role: 'contractor',
     };
 
     const res = await request(app)
