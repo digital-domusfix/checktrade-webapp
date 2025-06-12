@@ -10,6 +10,6 @@ export interface ProfileSetupData {
 }
 
 const updateProfile = (data: ProfileSetupData) =>
-  http.post('/api/identity/profile', data);
+  http.post('/api/identity/profile', { userId: data.userId, ...data });
 
 export default { updateProfile };
