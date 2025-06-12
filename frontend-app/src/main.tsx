@@ -5,6 +5,7 @@ import LoginPage from './features/auth/LoginPage';
 import SignupPage from './features/auth/SignupPage';
 import EmailVerificationPage from './features/auth/EmailVerificationPage';
 import Dashboard from './features/dashboard/Dashboard';
+import ProfileSetupPage from './features/onboarding/ProfileSetupPage';
 import './index.css';
 import HomePage from './pages/Home/HomePage';
 import Layout from './pages/Layout/Layout';
@@ -23,6 +24,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
             <Route path="/signup" element={<SignupPage />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/verify-email" element={<EmailVerificationPage />} />
+            <Route path="/profile-setup" element={<ProfileSetupPage />} />
             <Route path="/job/new" element={<NewJobPage />} />
           </Route>
         </Routes>

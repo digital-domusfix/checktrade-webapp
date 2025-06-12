@@ -60,7 +60,7 @@ export const EmailVerificationScreen = ({ userId, email }: Props) => {
   };
 
   const handleContinue = () => {
-    navigate('/dashboard');
+    navigate('/profile-setup');
   };
 
   return (

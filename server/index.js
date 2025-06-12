@@ -76,6 +76,31 @@ app.post('/api/users/:userId/jobs', (req, res) => {
   res.status(201).json(job);
 });
 
+app.get('/api/identity/me', (req, res) => {
+  const user = users[0];
+  if (!user) return res.status(404).json({ error: 'Not found' });
+  res.json({
+    userId: user.id,
+    fullName: user.fullName,
+    email: user.email,
+    isActive: user.verified,
+    isOnboarded: !!user.isOnboarded,
+  });
+});
+
+app.post('/api/identity/profile', (req, res) => {
+  const { userId, firstName, lastName, phone, city, postalCode } = req.body;
+  const user = users.find((u) => u.id === userId);
+  if (!user) return res.status(404).json({ error: 'User not found' });
+  user.firstName = firstName;
+  user.lastName = lastName;
+  user.phone = phone;
+  user.city = city;
+  user.postalCode = postalCode;
+  user.isOnboarded = true;
+  res.json({ success: true });
+});
+
 if (process.env.NODE_ENV !== 'test') {
   const port = process.env.PORT || 3000;
   app.listen(port, () => {
