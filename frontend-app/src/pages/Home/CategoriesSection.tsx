@@ -12,7 +12,7 @@ const CategoriesSection = () => {
   useEffect(() => {
     jobService
       .getJobCategories()
-      .then((res) => setCategories(res.data))
+      .then((res) => setCategories(res.data.categories))
       .catch((err) => console.error('Failed to load categories', err));
   }, []);
 

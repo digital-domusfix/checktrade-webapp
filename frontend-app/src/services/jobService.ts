@@ -36,11 +36,17 @@ export const convertJobDraft = (token: string) =>
     headers: { 'Auto-Save-Token': token },
   });
 
+export interface  JobCategoryId {
+  value: string;
+}
 export interface JobCategory {
-  id: string;
+  id: JobCategoryId;
   name: string;
 }
 
+export interface JobCategories{
+  categories: JobCategory[]
+}
 export interface JobSubcategory {
   id: string;
   name: string;
@@ -48,7 +54,7 @@ export interface JobSubcategory {
 }
 
 export const getJobCategories = () =>
-  http.get<JobCategory[]>('/api/job-categories');
+  http.get<JobCategories>('/api/job-categories');
 
 export const getJobSubcategories = (categoryId: string) =>
   http.get<JobSubcategory[]>(`/api/job-categories/${categoryId}/subcategories`);

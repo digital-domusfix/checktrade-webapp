@@ -36,7 +36,7 @@ export const QuickWizard = ({ onStart, onComplete }: Props) => {
   useEffect(() => {
     jobService
       .getJobCategories()
-      .then((res) => setCategories(res.data))
+      .then((res) => setCategories(res.data.categories))
       .catch((err) => console.error('Failed to load categories', err));
   }, []);
 
@@ -47,7 +47,7 @@ export const QuickWizard = ({ onStart, onComplete }: Props) => {
   useEffect(() => {
     if (!category) return;
     jobService
-      .getJobSubcategories(category.id)
+      .getJobSubcategories(category.id.value)
       .then((res) => setSubcategories(res.data))
       .catch((err) => console.error('Failed to load subcategories', err));
   }, [category]);
@@ -87,7 +87,7 @@ export const QuickWizard = ({ onStart, onComplete }: Props) => {
           <div className="grid grid-cols-2 gap-2">
             {categories.map((c) => (
               <button
-                key={c.id}
+                key={c.id.value}
                 onClick={() => {
                   setCategory(c);
                   next();
