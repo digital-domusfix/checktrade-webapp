@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '../../components/Button';
@@ -22,6 +22,7 @@ export default function ProfileSetupPage() {
   const [city, setCity] = useState('');
   const [postalCode, setPostalCode] = useState('');
   const [photo, setPhoto] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -68,6 +69,20 @@ export default function ProfileSetupPage() {
     const f = e.target.files && e.target.files[0];
     if (f) setPhoto(f);
   };
+
+  useEffect(() => {
+    if (!photo) {
+      setPreviewUrl(null);
+      return;
+    }
+
+    const url = URL.createObjectURL(photo);
+    setPreviewUrl(url);
+
+    return () => {
+      URL.revokeObjectURL(url);
+    };
+  }, [photo]);
 
   const next = () => {
     if (step === 1 && validateStep1()) setStep(2);
@@ -255,9 +270,9 @@ export default function ProfileSetupPage() {
                   className="hidden"
                 />
                 <div className="mx-auto h-24 w-24 overflow-hidden rounded-full bg-gray-200">
-                  {photo && (
+                  {photo && previewUrl && (
                     <img
-                      src={URL.createObjectURL(photo)}
+                      src={previewUrl}
                       alt="Preview"
                       className="h-full w-full object-cover"
                     />
