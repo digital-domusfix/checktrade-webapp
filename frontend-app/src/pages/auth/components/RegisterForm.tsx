@@ -80,7 +80,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onRegistered }) => {
           value={fullName}
           onChange={(e) => setFullName(e.target.value)}
           onBlur={() => handleBlur('fullName')}
-          className={`w-full p-3 border rounded-lg ${
+          className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary ${
             touched.fullName && !fullName.trim() ? 'border-red-500' : ''
           }`}
         />
@@ -99,7 +99,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onRegistered }) => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           onBlur={() => handleBlur('email')}
-          className={`w-full p-3 border rounded-lg ${
+          className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary ${
             touched.email && !isEmailValid(email) ? 'border-red-500' : ''
           }`}
         />
@@ -118,7 +118,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onRegistered }) => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           onBlur={() => handleBlur('password')}
-          className={`w-full p-3 border rounded-lg pr-20 ${
+          className={`w-full p-3 border rounded-lg pr-20 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary ${
             touched.password && !isPasswordValid(password) ? 'border-red-500' : ''
           }`}
         />
