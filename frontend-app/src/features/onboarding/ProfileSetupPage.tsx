@@ -38,7 +38,7 @@ export default function ProfileSetupPage() {
   const [toastMessage, setToastMessage] = useState('');
 
   const phoneDigits = phone.replace(/\D/g, '').slice(0, 10);
-  const isPhoneValid = phoneDigits.length === 10;
+  const isPhoneValid = /^(902|782)\d{7}$/.test(phoneDigits);
 
   const formatPhone = (val: string) => {
     const digits = val.replace(/\D/g, '').slice(0, 10);
@@ -55,7 +55,7 @@ export default function ProfileSetupPage() {
     const e: Record<string, string> = {};
     if (!firstName.trim()) e.firstName = 'First name is required';
     if (!lastName.trim()) e.lastName = 'Last name is required';
-    if (!isPhoneValid) e.phone = 'Enter a valid 10-digit number';
+    if (!isPhoneValid) e.phone = 'Enter a valid 902 or 782 phone number';
     setErrors(e);
     return e;
   };

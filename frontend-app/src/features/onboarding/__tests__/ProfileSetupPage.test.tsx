@@ -35,7 +35,7 @@ test('scrolls to first invalid field when finish fails validation', async () => 
     target: { value: 'B' },
   });
   fireEvent.change(screen.getByLabelText(/phone/i), {
-    target: { value: '(123) 456-7890' },
+    target: { value: '(902) 456-7890' },
   });
   fireEvent.click(screen.getByRole('button', { name: /next/i }));
   await screen.findByRole('button', { name: /finish/i });
@@ -71,7 +71,7 @@ test('shows toast when profile update fails', async () => {
     target: { value: 'B' },
   });
   fireEvent.change(screen.getByLabelText(/phone/i), {
-    target: { value: '(123) 456-7890' },
+    target: { value: '(902) 456-7890' },
   });
   fireEvent.click(screen.getByRole('button', { name: /next/i }));
   await screen.findByRole('button', { name: /finish/i });
@@ -108,6 +108,29 @@ test('advances to step 2 when step 1 is valid', async () => {
   ).toBeInTheDocument();
 });
 
+test('accepts 782 area code as valid', async () => {
+  render(<ProfileSetupPage />);
+
+  fireEvent.change(screen.getByLabelText(/first name/i), {
+    target: { value: 'Jane' },
+  });
+  fireEvent.change(screen.getByLabelText(/last name/i), {
+    target: { value: 'Smith' },
+  });
+  fireEvent.change(screen.getByLabelText(/phone/i), {
+    target: { value: '(782) 555-0000' },
+  });
+
+  const nextBtn = screen.getByRole('button', { name: /next/i });
+  expect(nextBtn).not.toBeDisabled();
+  fireEvent.click(nextBtn);
+
+  await screen.findByRole('button', { name: /finish/i });
+  expect(
+    screen.getByRole('heading', { name: /step 2 of 2/i }),
+  ).toBeInTheDocument();
+});
+
 test('displays validation errors and disables next until valid', () => {
   render(<ProfileSetupPage />);
 
@@ -130,7 +153,19 @@ test('displays validation errors and disables next until valid', () => {
   expect(nextBtn).toBeDisabled();
 
   fireEvent.blur(screen.getByLabelText(/phone/i));
-  expect(screen.getByText(/enter a valid 10-digit number/i)).toBeInTheDocument();
+  expect(
+    screen.getByText(/enter a valid 902 or 782 phone number/i),
+  ).toBeInTheDocument();
+
+  fireEvent.change(screen.getByLabelText(/phone/i), {
+    target: { value: '(506) 555-1234' },
+  });
+  expect(nextBtn).toBeDisabled();
+
+  fireEvent.blur(screen.getByLabelText(/phone/i));
+  expect(
+    screen.getByText(/enter a valid 902 or 782 phone number/i),
+  ).toBeInTheDocument();
 
   fireEvent.change(screen.getByLabelText(/phone/i), {
     target: { value: '(902) 555-1234' },
