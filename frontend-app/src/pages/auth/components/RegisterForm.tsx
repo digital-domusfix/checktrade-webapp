@@ -137,7 +137,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onRegistered }) => {
       </div>
       <Button type="submit" className="w-full flex items-center justify-center" disabled={submitting || !isFormValid}>
         {submitting && <Spinner className="text-white mr-2" />}
-        Sign Up
+        {submitting ? 'Signing up…' : 'Sign Up'}
       </Button>
       <button
         type="button"
