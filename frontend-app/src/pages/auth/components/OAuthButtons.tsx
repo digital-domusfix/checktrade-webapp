@@ -1,26 +1,59 @@
-import { FcGoogle } from 'react-icons/fc';
-import { BsApple } from 'react-icons/bs';
+import { useGoogleLogin } from '@react-oauth/google';
+import AppleLogin from 'react-apple-login';
 import { Button } from '../../../components/Button';
+import { useAuthStore } from '../../../store/useAuthStore';
 
-export const OAuthButtons = () => {
-  const handleOAuth = (provider: 'google' | 'apple') => {
-    window.location.href = `/auth/${provider}`; // or call API to get redirect URL
+export const OAuthButtons = ({ onLoggedIn }: { onLoggedIn: () => void }) => {
+  const loginWithExternal = useAuthStore((s) => s.externalLogin);
+
+  const loginWithGoogle = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      try {
+        const accessToken = tokenResponse.access_token;
+        await loginWithExternal('google', accessToken);
+        onLoggedIn();
+      } catch (err) {
+        console.error('Google login failed:', err);
+      }
+    },
+    onError: () => {
+      console.error('Google login error');
+    },
+    flow: 'implicit',
+  });
+
+  const handleAppleLogin = async (response: any) => {
+    if (response.code) {
+      try {
+        await loginWithExternal('apple', response.code);
+        onLoggedIn();
+      } catch (err) {
+        console.error('Apple login failed:', err);
+      }
+    } else {
+      console.error('Apple login error:', response);
+    }
   };
 
   return (
     <div className="space-y-3">
-      <Button
-        onClick={() => handleOAuth('google')}
-        className="flex w-full items-center justify-center gap-2 border border-gray-300 bg-white text-gray-800 hover:bg-gray-100"
-      >
-        <FcGoogle size={20} /> Continue with Google
+      <Button variant="outline" className="w-full" onClick={() => loginWithGoogle()}>
+        Continue with Google
       </Button>
-      <Button
-        onClick={() => handleOAuth('apple')}
-        className="flex w-full items-center justify-center gap-2 bg-black text-white hover:bg-gray-900"
-      >
-        <BsApple size={20} /> Continue with Apple
-      </Button>
+
+      <AppleLogin
+        clientId={import.meta.env.VITE_APPLE_CLIENT_ID}
+        redirectURI={import.meta.env.VITE_APPLE_REDIRECT_URI}
+        responseType="code"
+        responseMode="query"
+        usePopup={true}
+        callback={handleAppleLogin}
+        render={(renderProps: any) => (
+          <Button variant="outline" className="w-full" onClick={renderProps.onClick}>
+            Continue with Apple
+          </Button>
+        )}
+      />
     </div>
   );
 };

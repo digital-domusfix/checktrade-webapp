@@ -1,18 +1,18 @@
-import LoginForm from '../../pages/auth/components/LoginForm';
+import AuthTabs from "../../components/auth/AuthTabs"
 
 function LoginPage() {
   const handleLoggedIn = () => {
-    window.location.href = '/dashboard';
-  };
+    window.location.href = '/dashboard'
+  }
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        <h1 className="mb-6 text-center text-2xl font-bold">Login</h1>
-        <LoginForm onLoggedIn={handleLoggedIn} />
+      <div className="w-full max-w-md space-y-6">
+        <h1 className="text-center text-2xl font-bold">Log In</h1>
+        <AuthTabs onLoggedIn={handleLoggedIn} />
       </div>
     </div>
-  );
+  )
 }
 
-export default LoginPage;
+export default LoginPage

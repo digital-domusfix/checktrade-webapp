@@ -1,5 +1,17 @@
 import http from '../api/httpClient';
 
+
+export interface JobAnswerDto{
+  questionId: string,
+  answer: string
+}
+
+export interface JobAttachmentDto{
+  id: string,
+  url: string,
+  contentType: string
+}
+
 export interface CreateJobRequest {
   customerProfileId: string;
   propertyId: string;
@@ -21,6 +33,8 @@ export interface CreateJobRequest {
     postalCode?: string;
     country?: string;
   };
+  attachments?: JobAttachmentDto[]
+  answers?: JobAnswerDto[]
 }
 
 export const createJob = (data: CreateJobRequest) =>
@@ -39,6 +53,10 @@ export const convertJobDraft = (token: string) =>
 export interface JobCategoryId {
   value: string;
 }
+
+export interface JobSubcategoryId {
+  value: string;
+}
 export interface JobCategory {
   id: JobCategoryId;
   name: string;
@@ -49,10 +67,18 @@ export interface JobCategories {
   categories: JobCategory[];
 }
 export interface JobSubcategory {
-  id: string;
+  id: JobSubcategoryId;
   name: string;
   code: string;
   categoryId?: string;
+}
+
+export interface JobSubcategoryQuestion {
+  id: string;
+  questionText: string;
+  type: 'text' | 'yes_no' | 'dropdown';
+  isRequired: boolean;
+  options?: string[];
 }
 
 export const getJobCategories = () =>
@@ -67,6 +93,13 @@ export const getJobSubcategoryForm = (id: string) =>
 export const getJobsForProperty = (propertyId: string) =>
   http.get(`/api/identity/properties/${propertyId}/jobs`);
 
+export const getSubcategoryQuestions = async (
+  subcategoryId: string
+): Promise<JobSubcategoryQuestion[]> => {
+  const res = await http.get(`/api/job-subcategories/${subcategoryId}/questions`)
+  return res.data as JobSubcategoryQuestion[]
+}
+
 export default {
   createJob,
   createJobDraft,
@@ -75,4 +108,5 @@ export default {
   getJobSubcategories,
   getJobSubcategoryForm,
   getJobsForProperty,
+  getSubcategoryQuestions
 };

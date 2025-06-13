@@ -14,11 +14,13 @@
   },
   "dependencies": {
     "@headlessui/react": "^2.2.4",
+    "@react-oauth/google": "^0.12.2",
     "axios": "^1.9.0",
     "clsx": "^2.1.1",
     "framer-motion": "^12.17.0",
     "lucide-react": "^0.514.0",
     "react": "^18.2.0",
+    "react-apple-login": "^1.1.6",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.57.0",
     "react-icons": "^5.5.0",

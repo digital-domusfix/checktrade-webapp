@@ -10,10 +10,12 @@ import {
   verifyOtp,
   resendOtp,
   getMyProfile,
-  login as loginRequest,
+  login,
+  externalLogin
 } from '../api/identityApi';
 import { MyProfileDto } from '../types/common';
 import { AppConfig } from '../config';
+import http from '../api/httpClient';
 
 type AuthState = {
   profile: MyProfileDto | null;
@@ -26,7 +28,8 @@ type AuthState = {
 
   verify: (req: VerifyOtpRequest) => Promise<void>;
   resend: (req: ResendOtpRequest) => Promise<void>;
-  login: (req: LoginRequest) => Promise<void>;
+  login: (req: LoginRequest & { method?: string }) => Promise<void>;
+  externalLogin: (provider: 'google' | 'apple', idToken: string) => Promise<void>;
   fetchProfile: () => Promise<void>;
   logout: () => void;
 };
@@ -72,10 +75,17 @@ export const useAuthStore = create<AuthState>((set) => ({
   verify: async (req) => {
     try {
       set({ loading: true, error: undefined });
-      await verifyOtp(req);
+
+      const { token } = await verifyOtp(req);
+
+      set({ token });
+      localStorage.setItem('accessToken', token);
+      http.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
       await useAuthStore.getState().fetchProfile();
     } catch (err: any) {
       set({ error: err.message });
+      throw err;
     } finally {
       set({ loading: false });
     }
@@ -91,13 +101,14 @@ export const useAuthStore = create<AuthState>((set) => ({
       set({ loading: false });
     }
   },
-
-  login: async (req) => {
+ async login(req) {
     try {
       set({ loading: true, error: undefined });
-      const { data } = await loginRequest(req);
-      if (data && (data as any).token) {
-        set({ token: (data as any).token });
+      const { data } = await login(req);
+      if (data?.token) {
+        set({ token: data.token });
+        localStorage.setItem('accessToken', data.token);
+        http.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
       }
       await useAuthStore.getState().fetchProfile();
     } catch (err: any) {
@@ -107,17 +118,30 @@ export const useAuthStore = create<AuthState>((set) => ({
       set({ loading: false });
     }
   },
-
-  fetchProfile: async () => {
+  async externalLogin(provider, idToken) {
     try {
-      const { data } = await getMyProfile();
-      set({ profile: data });
-    } catch {
-      set({ profile: null });
+      set({ loading: true, error: undefined });
+      const { data } = await externalLogin({ provider, idToken, tenantId: AppConfig.tenantId });
+      if (data?.token) {
+        set({ token: data.token });
+        localStorage.setItem('accessToken', data.token);
+        http.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
+      }
+      await useAuthStore.getState().fetchProfile();
+    } catch (err: any) {
+      set({ error: err.message });
+      throw err;
+    } finally {
+      set({ loading: false });
     }
   },
-
+  async fetchProfile() {
+    const { data } = await getMyProfile();
+    set({ profile: data });
+  },
   logout: () => {
     set({ profile: null, token: null });
+    localStorage.removeItem('accessToken');
+    delete http.defaults.headers.common['Authorization'];
   },
 }));

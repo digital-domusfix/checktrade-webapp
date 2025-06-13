@@ -1,8 +1,9 @@
+// src/components/ProtectedRoute.tsx
 import React from 'react';
-import { useLocation, Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../store/useAuthStore';
 
-const ProtectedRoute = ({ children }) => {
+const ProtectedRoute: React.FC<{ children: React.ReactElement }> = ({ children }) => {
   const profile = useAuthStore((s) => s.profile);
   const location = useLocation();
 

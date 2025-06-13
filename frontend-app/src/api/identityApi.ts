@@ -16,6 +16,13 @@ export interface LoginRequest {
   password: string;
 }
 
+// identityApi.ts
+export interface ExternalLoginRequest {
+  provider: 'google' | 'apple';
+  idToken: string;
+  tenantId: string;
+}
+
 export interface RegisterCustomerRequest {
   firstName?: string
   lastName?: string
@@ -63,8 +70,11 @@ export const registerContractor = (data: RegisterContractorRequest) =>
 })
 
 
-export const verifyOtp = (data: VerifyOtpRequest) =>
-  http.post('/api/identity/verify-otp', data);
+// identityApi.ts
+export const verifyOtp = async (data: VerifyOtpRequest) => {
+  const res = await http.post('/api/identity/verify-otp', data)
+  return res.data // this should contain a token
+}
 
 export const resendOtp = (data: ResendOtpRequest) =>
   http.post('/api/identity/resend-otp', data);
@@ -73,3 +83,6 @@ export const getMyProfile = () => http.get('/api/identity/me');
 
 export const login = (data: LoginRequest) =>
   http.post('/api/identity/login', data);
+
+export const externalLogin = (data: ExternalLoginRequest) =>
+  http.post<{ token: string }>('/api/identity/external-login', data);
