@@ -30,7 +30,7 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
         <Modal onClose={closeWizard}>
           <QuickWizard
             onStart={() => console.log('Wizard started from', source)}
-            onComplete={() => console.log('Wizard complete from', source)}
+            onComplete={() => closeWizard()}
           />
         </Modal>
       )}

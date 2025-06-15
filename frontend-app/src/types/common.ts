@@ -37,3 +37,24 @@ export interface JobDto {
   status?: string;
   quoteStatus?: string;
 }
+
+export interface PropertyWithStats {
+  id: string;
+  nickname?: string;
+  address: {
+    line1: string;
+    city: string;
+    province: string;
+  };
+  primaryContact?: {
+    fullName: string;
+    phone: string;
+  };
+  stats: {
+    total: number;
+    open: number;
+    quoted: number;
+    assigned: number;
+    completed: number;
+  };
+}

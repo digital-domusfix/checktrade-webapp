@@ -42,8 +42,8 @@ export const OAuthButtons = ({ onLoggedIn }: { onLoggedIn: () => void }) => {
       </Button>
 
       <AppleLogin
-        clientId={import.meta.env.VITE_APPLE_CLIENT_ID}
-        redirectURI={import.meta.env.VITE_APPLE_REDIRECT_URI}
+        clientId="com.example.frontend-app"
+        redirectURI="http://localhost:5173/"
         responseType="code"
         responseMode="query"
         usePopup={true}

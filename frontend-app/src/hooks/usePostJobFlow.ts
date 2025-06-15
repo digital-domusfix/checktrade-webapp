@@ -8,7 +8,7 @@ interface UsePostJobFlowResult {
   postJobFlow: (input: {
     job: Omit<CreateJobRequest, 'customerProfileId' | 'propertyId'>
     address: AddressForm
-  }) => Promise<{ success: true } | { success: false; error: string }>
+  }) => Promise<{ success: true, jobId: string } | { success: false; error: string }>
   loading: boolean
 }
 

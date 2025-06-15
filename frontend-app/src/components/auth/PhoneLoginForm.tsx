@@ -1,60 +1,52 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useAuthStore } from '../../store/useAuthStore'
-import { Button } from '../Button'
-import { Spinner } from '../Spinner'
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '../../store/useAuthStore';
+import { Button } from '../Button';
+import { Spinner } from '../Spinner';
 
 const PhoneLoginForm: React.FC = () => {
-  const [phone, setPhone] = useState('')
-  const [otp, setOtp] = useState('')
-  const [step, setStep] = useState<'enterPhone' | 'enterOtp'>('enterPhone')
-  const [userId, setUserId] = useState<string | null>(null)
-  const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
+  const [phone, setPhone] = useState('');
+  const [otp, setOtp] = useState('');
+  const [step, setStep] = useState<'enterPhone' | 'enterOtp'>('enterPhone');
+  const [userId, setUserId] = useState<string >("");
+  const [login, setLogin] = useState<string >("");
+  const [tenantId, setTeanantId] = useState<string>("");
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const verify = useAuthStore((s) => s.verify)
-  const resend = useAuthStore((s) => s.resend)
-  const registerCustomer = useAuthStore((s) => s.registerCustomer)
-  const navigate = useNavigate()
+  const sendLoginOtp = useAuthStore((s) => s.sendLoginOtp);
+  const verifyLoginOtp = useAuthStore((s) => s.verifyLoginOtp);
+  const navigate = useNavigate();
 
   const handleSendOtp = async () => {
-    setLoading(true)
-    setError('')
+    setLoading(true);
+    setError('');
     try {
-      // Register anonymously (if not already registered)
-      const userId = await registerCustomer({
-        email: `${phone}@placeholder.com`,
-        password: 'Temp@1234',
-        firstName: 'Temp',
-        lastName: 'User',
-        mobile: phone,
-        referralSource: 'phone-login',
-        preferredLanguage: 'en',
-        acceptedTerms: true,
-        marketingOptIn: false,
-      })
-      setUserId(userId)
-      setStep('enterOtp')
+      const result = await sendLoginOtp({ mobile: phone });
+      setLogin(phone);
+      setUserId(result.userId);
+      setTeanantId(result.tenantId);
+      setStep('enterOtp');
     } catch (err: any) {
-      setError(err.message || 'Failed to send OTP')
+      setError(err.message || 'Failed to send OTP');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const handleVerifyOtp = async () => {
-    if (!userId || !otp) return
-    setLoading(true)
-    setError('')
+    if (!userId || !otp) return;
+    setLoading(true);
+    setError('');
     try {
-      await verify({ userId, mobileOtp: otp, emailOtp: '' })
-      navigate('/dashboard') // 🎯 Authenticated route
+      await verifyLoginOtp({ login , otp, tenantId });
+      navigate('/dashboard');
     } catch (err: any) {
-      setError('Invalid OTP. Please try again.')
+      setError('Invalid OTP. Please try again.');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="space-y-4">
@@ -97,20 +89,14 @@ const PhoneLoginForm: React.FC = () => {
             <Button onClick={handleVerifyOtp} disabled={loading || !otp}>
               {loading ? <Spinner /> : 'Verify & Log In'}
             </Button>
-            <button
-              type="button"
-              className="text-sm text-primary underline"
-              onClick={() => userId && resend({ userId })}
-            >
-              Resend code
-            </button>
+            {/* Future: implement resend-login-otp if needed */}
           </div>
         </>
       )}
 
       {error && <p className="text-sm text-red-500">{error}</p>}
     </div>
-  )
-}
+  );
+};
 
-export default PhoneLoginForm
+export default PhoneLoginForm;
